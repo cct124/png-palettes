@@ -4,19 +4,26 @@
 )]
 use png_libimagequant;
 
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}!", name)
+fn handle() {
+    // png_libimagequant::Optimization::new(
+    //     speed,
+    //     quality_minimum,
+    //     quality_target,
+    //     dithering_level,
+    //     compression,
+    //     exclude,
+    //     worklist,
+    // )
 }
 
-#[tauri::command]
-fn add(l: usize, r: usize) -> usize {
-    png_libimagequant::add(l, r)
-}
+// #[tauri::command]
+// fn greet(name: &str) -> String {
+//     format!("Hello, {}!", name)
+// }
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet, add])
+        .invoke_handler(tauri::generate_handler![])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }
