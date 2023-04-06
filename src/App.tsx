@@ -1,43 +1,53 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
-import "./App.css";
+import { ChangeEvent, useState } from "react";
+import styles from "./App.module.scss";
 import { invoke } from "@tauri-apps/api";
 
 function App() {
   const [count, setCount] = useState(0);
+  const [left, setLeft] = useState(0);
+  const [right, setRight] = useState(0);
+  const [result, setResult] = useState(0);
 
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      <div className="mar-b-20">
+        <div className={classNames(styles.add, "flex")}>
+          <input
+            className="mar-r-10"
+            type="number"
+            value={left}
+            onChange={(e) => setLeft(Number(e.target.value))}
+          />
+          <input
+            className="mar-r-10"
+            type="number"
+            value={right}
+            onChange={(e) => setRight(Number(e.target.value))}
+          />
+          <span className="mar-r-10">=</span>
+          <span>{result}</span>
+        </div>
+        <button
+          onClick={() =>
+            invoke<number>("add", { l: left, r: right })
+              // `invoke` 返回的是一个 Promise
+              .then((response) => setResult(response))
+          }
+        >
+          add
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
       </div>
-      <button
-        onClick={() =>
-          invoke("greet", { name: "World" })
-            // `invoke` 返回的是一个 Promise
-            .then((response) => console.log(response))
-        }
-      >
-        greet
-      </button>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <div className="greet">
+        <button
+          onClick={() =>
+            invoke("greet", { name: "World" })
+              // `invoke` 返回的是一个 Promise
+              .then((response) => console.log(response))
+          }
+        >
+          greet
+        </button>
+      </div>
     </div>
   );
 }
