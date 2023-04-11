@@ -1,0 +1,44 @@
+.titlebar {
+  $h: 30px;
+  height: $h;
+  background: var(--titlebar-bg-color);
+  user-select: none;
+
+  .left {
+  }
+
+  .middle {
+  }
+
+  .right {
+    height: $h;
+
+    .icon {
+      $w: 40px;
+      $s: 12px;
+      width: $w;
+      height: calc($h - 5px);
+      transition: all 0.3s;
+
+      &:hover {
+        background-color: var(--titlebar-btn-bg-hover);
+        svg {
+          fill: var(--titlebar-btn-fill-hover);
+        }
+        &[data-name="SvgClose"] {
+          background-color: var(--titlebar-btn-close-bg-hover);
+          svg {
+            fill: var(--titlebar-btn-close-bg-fill);
+          }
+        }
+      }
+
+      svg {
+        width: $s;
+        height: $s;
+        // transform: scale(-0.32);
+        fill: var(--titlebar-btn-fill);
+      }
+    }
+  }
+}
