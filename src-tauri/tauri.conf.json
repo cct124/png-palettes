@@ -6,7 +6,7 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "png-palettes",
+    "productName": "Png Palettes",
     "version": "0.1.0"
   },
   "tauri": {

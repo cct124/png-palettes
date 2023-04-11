@@ -1,8 +1,12 @@
 import { appWindow } from "@tauri-apps/api/window";
+import { getName } from "@tauri-apps/api/app";
 import styles from "./index.module.scss";
 import { ReactComponent as CloseSvg } from "../../assets/icons/svg/close.svg"; // 关闭图标
 import { ReactComponent as MinimizeSvg } from "../../assets/icons/svg/minimize.svg"; // 最小化图标
 import WindowSizeControl from "./windowSizeControl";
+import logoSrc from "@assets/icons/img/logo.png";
+
+const appName = await getName();
 
 /**
  * 窗口标题栏
@@ -42,9 +46,17 @@ export default function Container() {
   return (
     <div
       data-tauri-drag-region
-      className={classNames(styles.titlebar, "flex-jcsb-aic")}
+      className={classNames(styles.titlebar, "flex-jcsb-aic", "pad-l-5")}
     >
-      <div className={classNames(styles.left)}></div>
+      <div
+        data-tauri-drag-region
+        className={classNames(styles.left, "flex-jcfs-aic")}
+      >
+        <img data-tauri-drag-region className="mar-r-5" src={logoSrc} alt="" />
+        <h1 data-tauri-drag-region className="fs-13">
+          {appName}
+        </h1>
+      </div>
       <div className={classNames(styles.middle, "grow")}></div>
       <div className={classNames(styles.right, "flex-jcfs-aifs")}>{tbtns}</div>
     </div>

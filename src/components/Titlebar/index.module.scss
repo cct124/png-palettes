@@ -5,6 +5,16 @@
   user-select: none;
 
   .left {
+    h1 {
+      font-weight: normal;
+      color: var(--titlebar-application-name-color);
+    }
+
+    img {
+      $s: 18px;
+      width: $s;
+      height: $s;
+    }
   }
 
   .middle {
