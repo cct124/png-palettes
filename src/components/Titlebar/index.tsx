@@ -1,7 +1,7 @@
 import { appWindow } from "@tauri-apps/api/window";
 import styles from "./index.module.scss";
-import { ReactComponent as CloseSvg } from "../../assets/icon/svg/close.svg"; // 关闭图标
-import { ReactComponent as MinimizeSvg } from "../../assets/icon/svg/minimize.svg"; // 最小化图标
+import { ReactComponent as CloseSvg } from "../../assets/icons/svg/close.svg"; // 关闭图标
+import { ReactComponent as MinimizeSvg } from "../../assets/icons/svg/minimize.svg"; // 最小化图标
 import WindowSizeControl from "./windowSizeControl";
 
 /**
