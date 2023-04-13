@@ -1,5 +1,7 @@
 import { useRef, useEffect } from "react";
 import styles from "./index.module.scss";
+import Button from "@src/components/UI/Button";
+import * as dialog from "@tauri-apps/api/dialog";
 
 export default function DropContainer() {
   const drop = useRef<HTMLDivElement>(null);
@@ -36,10 +38,30 @@ export default function DropContainer() {
     e.stopPropagation();
   }
 
+  async function openFile() {
+    const selected = await dialog.open({
+      multiple: true,
+      filters: [
+        {
+          name: "Image",
+          extensions: ["png"],
+        },
+      ],
+    });
+    console.log(selected);
+  }
+
   return (
     <div
       ref={drop}
-      className={classNames(styles.dropContainer, "w-100p", "h-100p")}
-    ></div>
+      className={classNames(
+        styles.dropContainer,
+        "flex-center",
+        "w-100p",
+        "h-100p"
+      )}
+    >
+      <Button onClick={openFile}>openFile</Button>
+    </div>
   );
 }

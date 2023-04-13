@@ -16,7 +16,8 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "paths": {
-      "@tools*": ["./src/utils/tools"]
+      "@tools*": ["./src/utils/tools"],
+      "@src/*": ["./src/*"]
     }
   },
   "include": ["src/**/*"],
