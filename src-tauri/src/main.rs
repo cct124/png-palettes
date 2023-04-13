@@ -3,8 +3,8 @@
     windows_subsystem = "windows"
 )]
 
-use tauri::Manager;
 use png_libimagequant;
+use tauri::{Manager, WindowEvent};
 use window_shadows::set_shadow;
 
 fn handle() {
