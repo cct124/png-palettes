@@ -1,19 +1,28 @@
 import { useState, createContext } from "react";
 import styles from "./index.module.scss";
-import { SetThemeContext, THEMING_TYPE } from "@src/context/theming";
+import { ThemeStateContext, THEMING_TYPE } from "@src/context/theming";
 
 export default function Theming({
   children,
 }: {
   children?: JSX.Element | JSX.Element[] | string | number;
 }) {
-  const [theme, setTheme] = useState<THEMING_TYPE>(THEMING_TYPE.LIGHT);
+  const classNameThemeMap = {
+    [THEMING_TYPE.LIGHT]: styles[THEMING_TYPE.LIGHT],
+    [THEMING_TYPE.DARK]: styles[THEMING_TYPE.DARK],
+  };
+  const useThemeState = useState<THEMING_TYPE>(THEMING_TYPE.LIGHT);
 
   return (
-    <div className={classNames(styles[theme])}>
-      <SetThemeContext.Provider value={setTheme}>
+    <div
+      className={classNames(
+        styles.theming,
+        classNameThemeMap[useThemeState[0]]
+      )}
+    >
+      <ThemeStateContext.Provider value={useThemeState}>
         {children}
-      </SetThemeContext.Provider>
+      </ThemeStateContext.Provider>
     </div>
   );
 }

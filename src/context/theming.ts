@@ -11,9 +11,9 @@ export enum THEMING_TYPE {
   /**
    * 黑暗
    */
-  DARK = "DARK",
+  DARK = "dark",
 }
 
-export const SetThemeContext = createContext<
-  React.Dispatch<React.SetStateAction<THEMING_TYPE>>
+export const ThemeStateContext = createContext<
+  [THEMING_TYPE, React.Dispatch<React.SetStateAction<THEMING_TYPE>>]
 >(null as any);

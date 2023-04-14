@@ -1,1 +1,9 @@
+@use "sass:string";
+@use "sass:map";
 
+$thmem-map: (
+  //   --text-color-light: #161616,
+  --text-color-dark: #ffffff
+);
+
+$themes: "light", "dark";

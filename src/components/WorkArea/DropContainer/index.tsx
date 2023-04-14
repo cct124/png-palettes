@@ -1,10 +1,12 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useContext } from "react";
 import styles from "./index.module.scss";
 import Button from "@src/components/UI/Button";
 import * as dialog from "@tauri-apps/api/dialog";
+import { ThemeStateContext, THEMING_TYPE } from "@src/context/theming";
 
 export default function DropContainer() {
   const drop = useRef<HTMLDivElement>(null);
+  const [theme, setTheme] = useContext(ThemeStateContext);
 
   useEffect(() => {
     if (drop.current) {
@@ -51,6 +53,11 @@ export default function DropContainer() {
     console.log(selected);
   }
 
+  function switchTheme() {
+    setTheme(THEMING_TYPE.DARK);
+    console.log(theme);
+  }
+
   return (
     <div
       ref={drop}
@@ -62,6 +69,7 @@ export default function DropContainer() {
       )}
     >
       <Button onClick={openFile}>openFile</Button>
+      <Button onClick={switchTheme}>switchTheme</Button>
     </div>
   );
 }
