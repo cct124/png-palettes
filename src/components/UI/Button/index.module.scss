@@ -1,2 +1,36 @@
 .button {
+  $pad-lr: 10px;
+  $br: 5px;
+  padding-inline-start: $pad-lr;
+  padding-inline-end: $pad-lr;
+  border-radius: $br;
+  vertical-align: middle;
+
+  &.default {
+    &.light {
+      border: 1px solid var(--chakra-colors-messenger-350);
+
+      &:hover {
+        background-color: rgba(71, 150, 235, 0.05);
+      }
+      &:active {
+        color: var(--button-text-color-active);
+        background-color: rgba(71, 150, 235, 0.1);
+        border-color: var(--chakra-colors-messenger-550);
+      }
+    }
+
+    &.dark {
+      border: 1px solid var(--chakra-colors-gray-650);
+
+      &:hover {
+        background-color: rgba(71, 150, 235, 0.05);
+      }
+      &:active {
+        color: var(--button-text-color-active);
+        background-color: rgba(71, 150, 235, 0.1);
+        border-color: var(--chakra-colors-messenger-550);
+      }
+    }
+  }
 }

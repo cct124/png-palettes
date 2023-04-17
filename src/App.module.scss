@@ -1,4 +1,11 @@
 /* App.module.css */
 .app {
-  color: var(--text-color);
+  &.light {
+    color: var(--chakra-colors-gray-900);
+  }
+
+  &.dark {
+    color: var(--chakra-colors-gray-50);
+    background-color: var(--chakra-colors-gray-900);
+  }
 }

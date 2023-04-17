@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { appWindow } from "@tauri-apps/api/window";
 import { getName } from "@tauri-apps/api/app";
 import styles from "./index.module.scss";
@@ -5,6 +6,7 @@ import { ReactComponent as CloseSvg } from "../../assets/icons/svg/close.svg"; /
 import { ReactComponent as MinimizeSvg } from "../../assets/icons/svg/minimize.svg"; // 最小化图标
 import WindowSizeControl from "./WindowSizeControl";
 import logoSrc from "@assets/icons/img/logo.png";
+import { ThemeStateContext, THEMING_TYPE } from "@src/context/theming";
 
 const appName = await getName();
 
@@ -13,12 +15,13 @@ const appName = await getName();
  * @returns
  */
 export default function Container() {
+  const [theme, setTheme] = useContext(ThemeStateContext);
   /**
    * 按钮
    */
   const tbtns = [MinimizeSvg, WindowSizeControl, CloseSvg].map((v, i) => (
     <div
-      className={classNames(styles.icon, "flex-center")}
+      className={classNames(styles.icon, styles[theme], "flex-center")}
       data-name={v.name}
       key={i}
       onClick={() => tap(v.name)}
@@ -46,7 +49,7 @@ export default function Container() {
   return (
     <div
       data-tauri-drag-region
-      className={classNames(styles.titlebar, "flex-jcsb-aic", "pad-l-5")}
+      className={classNames(styles.titlebar, styles[theme], "flex-jcsb-aic", "pad-l-5")}
     >
       <div
         data-tauri-drag-region

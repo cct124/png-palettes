@@ -1,17 +1,24 @@
-import { ChangeEvent, useState } from "react";
+import { useContext } from "react";
 import styles from "./App.module.scss";
 import Container from "./components/Container";
 import Titlebar from "./components/Titlebar";
-import Theming from "./components/Theming";
+import { ThemeStateContext, THEMING_TYPE } from "@src/context/theming";
 
 function App() {
+  const [theme] = useContext(ThemeStateContext);
   return (
-    <Theming>
-      <div className={classNames(styles.app, "w-100vw", "h-100vh", "hidden")}>
-        <Titlebar></Titlebar>
-        <Container></Container>
-      </div>
-    </Theming>
+    <div
+      className={classNames(
+        styles.app,
+        styles[theme],
+        "w-100vw",
+        "h-100vh",
+        "hidden"
+      )}
+    >
+      <Titlebar></Titlebar>
+      <Container></Container>
+    </div>
   );
 }
 

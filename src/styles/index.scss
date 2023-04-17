@@ -1,9 +1,75 @@
+* {
+  box-sizing: border-box;
+  user-select: none;
+}
+
 #root {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans",
     Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
-  button {
-    border: initial;
-    padding: initial;
-    background-color: initial;
+}
+
+button {
+  border: initial;
+  padding: initial;
+  background-color: initial;
+  color: inherit;
+}
+
+$map: (
+  1: 50,
+  2: 100,
+  3: 150,
+  4: 200,
+  5: 250,
+  6: 300,
+  7: 350,
+  8: 400,
+  9: 450,
+  10: 500,
+  11: 550,
+  12: 600,
+  13: 650,
+  14: 700,
+  15: 750,
+  16: 800,
+  17: 850,
+  18: 900,
+  19: 950,
+);
+
+#root {
+  --chakra-colors-white: #ffffff;
+
+  @each $key, $value in $map {
+    $h: calc(204 + $key * 1);
+    $s: calc(45 - $key * 2) + "%";
+    $l: calc(100 - ($value * 100) / (1980 - $value)) + "%";
+    --chakra-colors-gray-#{$value}: hsl(#{$h}deg, #{$s}, #{$l});
+  }
+
+  @each $key, $value in $map {
+    $h: calc(136 + $key * 2.4);
+    $s: calc(($value / 1920) * 100) + "%";
+    $l: calc(100 - ($value * 100) / (2000 - $value)) + "%";
+    --chakra-colors-green-#{$value}: hsl(#{$h}deg, #{$s}, #{$l});
+  }
+
+  @each $key, $value in $map {
+    $h: calc(201 + $key * 2.4);
+    $s: calc(100 - $key * 3.6) + "%";
+    $l: calc(100 - ($value * 100) / (2000 - $value)) + "%";
+    --chakra-colors-blue-#{$value}: hsl(#{$h}deg, #{$s}, #{$l});
+  }
+
+  @each $key, $value in $map {
+    $h: calc(0 + $key * 0.2);
+    $s: calc(100 - $key * 1) + "%";
+    $l: calc(100 - ($value * 100) / (2000 - $value)) + "%";
+    --chakra-colors-red-#{$value}: hsl(#{$h}deg, #{$s}, #{$l});
+  }
+
+  @each $key, $value in $map {
+    $l: calc(100 - ($value * 100) / (2030 - $value)) + "%";
+    --chakra-colors-messenger-#{$value}: hsl(211deg, 100%, #{$l});
   }
 }

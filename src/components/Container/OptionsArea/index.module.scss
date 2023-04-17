@@ -1,0 +1,9 @@
+.optionsArea {
+  width: 250px;
+  &.light {
+    background-color: var(--chakra-colors-green-100);
+  }
+  &.dark {
+    background-color: var(--chakra-colors-gray-900);
+  }
+}

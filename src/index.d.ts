@@ -1,7 +1,7 @@
 /**
  * 将 css class 名合并以空格分隔的形式输出
  */
-function classNames(...args: string[]): string | undefined;
+function classNames(...args: (string | undefined)[]): string | undefined;
 
 interface Window {
   /**

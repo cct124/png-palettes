@@ -1,46 +1,18 @@
-@use "sass:string";
-@use "sass:map";
+// @use "sass:string";
+// @use "sass:map";
+// @import "@src/styles/variables.scss";
 
-$thmem-map: (
-  // --- App START ---
-  --text-color-light: #161616,
-  --text-color-dark: #ffffff,
-  // --- App END ---
-  // --- titlebar START ---
-  --titlebar-bg-color-light: #e8eaed,
-  --titlebar-bg-color-dark: #343746,
 
-  --titlebar-btn-bg-hover-light: #d0d2d5,
-  --titlebar-btn-bg-hover-dark: #17181b,
 
-  --titlebar-btn-fill-hover-light: #000000,
-  --titlebar-btn-fill-hover-dark: #ffffff,
-
-  --titlebar-btn-fill-light: #8c8d8f,
-  --titlebar-btn-fill-dark: #f8f8f8,
-
-  --titlebar-btn-close-bg-hover-light: #e81123,
-  --titlebar-btn-close-bg-hover-dark: #e81123,
-
-  --titlebar-btn-close-bg-fill-light: white,
-  --titlebar-btn-close-bg-fill-dark: white,
-
-  --titlebar-application-name-color-light: #414141,
-  --titlebar-application-name-color-dark: #ffffff,
-  // --- titlebar END ---
-);
-
-$themes: "light", "dark";
-
-@each $thmem in $themes {
-  .#{$thmem} {
-    @each $name, $val in $thmem-map {
-      $index: string.index($name, $thmem);
-      @if $index {
-        $i: $index - 2;
-        $key: string.slice($name, 0, $i);
-        #{$key}: $val;
-      }
-    }
-  }
-}
+// @each $thmem in $themes {
+//   .#{$thmem} {
+//     @each $name, $val in $thmem-map {
+//       $index: string.index($name, $thmem);
+//       @if $index {
+//         $i: $index - 2;
+//         $key: string.slice($name, 0, $i);
+//         #{$key}: $val;
+//       }
+//     }
+//   }
+// }

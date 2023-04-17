@@ -6,13 +6,13 @@ import svgr from "vite-plugin-svgr";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react(), svgr()],
-  // css: {
-  //   preprocessorOptions: {
-  //     scss: {
-  //       additionalData: '@import "./src/styles/variables.scss";',
-  //     },
-  //   },
-  // },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: '@import "./src/styles/variables.scss";',
+      },
+    },
+  },
   resolve: {
     alias: {
       "@assets": path.resolve(__dirname, "./src/assets"),

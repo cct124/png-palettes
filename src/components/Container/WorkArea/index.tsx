@@ -8,7 +8,7 @@ import DropContainer from "./DropContainer";
  */
 export default function WorkArea() {
   return (
-    <div className={classNames(styles.workArea, "h-100vh", "grow")}>
+    <div className={classNames(styles.workArea, "grow")}>
       <DropContainer></DropContainer>
     </div>
   );

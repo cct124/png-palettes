@@ -1,0 +1,34 @@
+.themeSwitch {
+  $s: 20px;
+  width: $s;
+  height: $s;
+
+  &.light {
+    &:hover {
+      svg {
+        fill: var(--chakra-colors-gray-900);
+      }
+    }
+    svg {
+      fill: var(--chakra-colors-gray-800);
+    }
+  }
+
+  &.dark {
+    &:hover {
+      svg {
+        fill: var(--chakra-colors-white);
+      }
+    }
+    svg {
+      fill: var(--chakra-colors-gray-200);
+    }
+  }
+
+  svg {
+    $s: 16px;
+    width: $s;
+    height: $s;
+    fill: var(--theme-switch-fill);
+  }
+}

@@ -3,7 +3,7 @@
  * @param args
  * @returns
  */
-export function classNames(...args: string[]) {
+export function classNames(...args: (string | undefined)[]) {
   return args.every((str) => str === undefined)
     ? undefined
     : args.filter((str) => typeof str === "string" && str !== "").join(" ");
