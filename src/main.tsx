@@ -20,16 +20,16 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   </React.StrictMode>
 );
 
-(function () {
-  const li = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
-  for (const [i, iter] of li.entries()) {
-    console.log(i, 300 / iter);
-    const h = 204 + i * 6;
-    const s = 45 - i * 2.6;
-    const l = 100 - (iter * 100) / (2000 - iter);
-    console.log(
-      `${iter}: hsl(${h.toFixed(2)}, ${s.toFixed(2)}, ${l.toFixed(2)})`
-    );
-    // console.log(iter, 100 - (iter * 100) / (1920 - iter));
-  }
-})();
+// (function () {
+//   const li = [50, 100, 200, 300, 400, 500, 600, 700, 800, 900];
+//   for (const [i, iter] of li.entries()) {
+//     console.log(i, 300 / iter);
+//     const h = 204 + i * 6;
+//     const s = 45 - i * 2.6;
+//     const l = 100 - (iter * 100) / (2000 - iter);
+//     console.log(
+//       `${iter}: hsl(${h.toFixed(2)}, ${s.toFixed(2)}, ${l.toFixed(2)})`
+//     );
+//     // console.log(iter, 100 - (iter * 100) / (1920 - iter));
+//   }
+// })();
