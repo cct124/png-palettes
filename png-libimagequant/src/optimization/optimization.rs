@@ -1,8 +1,9 @@
 use super::Pngquant;
 use crate::thread::ThreadPool;
-use crate::{BYTES_INTEGER, SECOND_CONSTANT, PROGRESS_CONSTANT, PROGRESS_COMPLETE};
+use crate::{BYTES_INTEGER, PROGRESS_COMPLETE, PROGRESS_CONSTANT, SECOND_CONSTANT};
 use png::Compression;
 use std::fs::DirEntry;
+use std::path::PathBuf;
 use std::sync::mpsc;
 use std::thread::available_parallelism;
 use std::time::{SystemTime, UNIX_EPOCH};
@@ -44,7 +45,6 @@ impl<'a> Optimization<'a> {
         quality_minimum: Option<u8>,
         quality_target: Option<u8>,
         dithering_level: Option<f32>,
-        compression: Compression,
         exclude: Option<Vec<String>>,
         worklist: &'a mut Vec<Work>,
     ) -> Optimization<'a> {
@@ -70,7 +70,7 @@ impl<'a> Optimization<'a> {
             thread_pool,
             end_num: 0,
             dithering_level: Some(dithering_level.unwrap_or(1.0)),
-            compression,
+            compression: Compression::Default,
             start_time,
             process_file_num: 0,
         }
@@ -141,8 +141,13 @@ impl<'a> Optimization<'a> {
     // }
 
     /// 执行数组中的工作任务
-    pub fn run_worklist(&mut self) {
-        let (status_sender, status_receiver) = mpsc::sync_channel(self.worklist.len());
+    pub fn run_worklist<F1, F2>(&mut self, progress_change: F1, status_change: F2)
+    where
+        F1: Fn(&Work) -> (),
+        F2: Fn(&Work) -> (),
+    {
+        let (progress_sender, progress_receiver) = mpsc::sync_channel(self.worklist.len());
+        let (status_sender, status_receiver) = mpsc::channel::<Status>();
 
         // let progress_total = (self.worklist.len() * 110) as f64;
         // let pbstr = "\u{25A0}".repeat(20).to_string();
@@ -155,14 +160,14 @@ impl<'a> Optimization<'a> {
                 if let WorkStatus::INIT = work.status {
                     // 开始执行，工作任务状态改为等待
                     work.status = WorkStatus::WAIT;
-                    let path = work.path.path();
+                    let path = work.path.clone();
                     let speed = self.speed;
                     let quality_target = self.quality_target;
                     let quality_minimum = self.quality_minimum;
                     let dithering_level = self.dithering_level;
                     let compression = self.compression;
+                    let progress_sender = progress_sender.clone();
                     let status_sender = status_sender.clone();
-                    let progress_sender = status_sender.clone();
                     let id = work.id;
                     // 多线程执行工作任务
                     self.thread_pool.execute(move || {
@@ -191,7 +196,7 @@ impl<'a> Optimization<'a> {
                             status_sender
                                 .send(Status {
                                     id,
-                                    status: WorkStatus::End,
+                                    status: WorkStatus::END,
                                     progress: PROGRESS_CONSTANT,
                                     original_size,
                                     size,
@@ -218,15 +223,12 @@ impl<'a> Optimization<'a> {
                 let work = self.worklist.iter_mut().find(|work| work.id == message.id);
                 if let Some(work) = work {
                     match message.status {
-                        WorkStatus::End => {
+                        WorkStatus::END => {
                             // 将工作任务状态改为已结束
-                            work.status = WorkStatus::End;
+                            work.status = WorkStatus::END;
                             work.original_size = message.original_size;
                             work.size = message.size;
                             self.process_file_num += 1;
-                        }
-                        WorkStatus::PROGRESS => {
-                            work.progress = (message.progress.round() / PROGRESS_CONSTANT * PROGRESS_COMPLETE) as usize
                         }
                         WorkStatus::UNHANDLED => {
                             // 将工作任务状态改为已结束
@@ -235,17 +237,18 @@ impl<'a> Optimization<'a> {
                         _ => {}
                     }
                     self.end_num += 1;
+                    status_change(&work)
                 }
             };
 
-            // if let Ok(progress) = progress_receiver.try_recv() {
-            //     // let work = self.worklist.iter_mut().find(|work| work.id == progress.id);
-            //     // if let Some(work) = work {
-            //     //     // 改变工作进度
-            //     //     work.progress = progress.value.round() as usize;
-            //     //     // self.update_progress_bar(progress_total, &pbstr, &pbwid);
-            //     // }
-            // }
+            if let Ok(progress) = progress_receiver.try_recv() {
+                let work = self.worklist.iter_mut().find(|work| work.id == progress.id);
+                if let Some(work) = work {
+                    // 改变工作进度
+                    work.progress = progress.value.round() as usize;
+                    progress_change(&work)
+                }
+            }
 
             // 判断是否所有任务已完成
             if self.worklist.len() == self.end_num {
@@ -336,11 +339,11 @@ impl<'a> Optimization<'a> {
 #[derive(Debug)]
 pub struct Work {
     // 工作id
-    id: usize,
+    pub id: usize,
     // 工作路径
-    path: DirEntry,
+    pub path: PathBuf,
     // 工作状态
-    status: WorkStatus,
+    pub status: WorkStatus,
     // 工作进度
     pub progress: usize,
     /// 源文件大小
@@ -355,11 +358,9 @@ pub enum WorkStatus {
     /// 初始化
     INIT,
     /// 结束
-    End,
+    END,
     /// 正在执行
     WAIT,
-    /// 进度变更
-    PROGRESS,
     /// 未处理，不支持的png格式
     UNHANDLED,
 }

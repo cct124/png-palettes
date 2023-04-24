@@ -2,11 +2,14 @@ use imagequant::Histogram;
 use png::{ColorType, Compression, Decoder, Reader};
 use std::{fs::File, io::BufWriter, path::Path, sync::mpsc::SyncSender};
 
-use super::{
-    optimization::{Status, WorkStatus},
-    Frame,
-};
+use super::Frame;
 use crate::{error::Error, PROGRESS_CONSTANT};
+
+#[derive(Debug)]
+pub struct Progress {
+    pub id: usize,
+    pub value: f32,
+}
 
 /// PNG优化结构体
 pub struct Pngquant<'a> {
@@ -22,11 +25,11 @@ pub struct Pngquant<'a> {
     /// 优化参数设置
     imagequant_attr: Option<imagequant::Attributes>,
     /// 默认优化的最大质量
-    def_quality_target: u8,
+    def_quality_max: u8,
     /// 平滑图像参数
     dithering_level: Option<f32>,
     /// 进度发送
-    progress_sender: SyncSender<Status>,
+    progress_sender: SyncSender<Progress>,
     /// 源文件大小
     pub original_size: Option<u64>,
     /// 压缩文件大小
@@ -38,17 +41,17 @@ impl<'a> Pngquant<'a> {
         id: usize,
         path: &'a Path,
         speed: Option<u8>,
-        quality_minimum: Option<u8>,
-        quality_target: Option<u8>,
+        quality_min: Option<u8>,
+        quality_max: Option<u8>,
         dithering_level: Option<f32>,
-        progress_sender: SyncSender<Status>,
+        progress_sender: SyncSender<Progress>,
     ) -> Result<Pngquant<'a>, Error> {
         let file = File::open(path).unwrap();
         let original_size = file.metadata().unwrap().len();
         let decoder = Decoder::new(file);
         let reader = decoder.read_info().unwrap();
         let info = reader.info();
-        let def_quality_target: u8 = 60;
+        let def_quality_max: u8 = 60;
         // 根据颜色模式实例化不同的优化结构体，目前只支持优化Rgba模式的png图像
         match info.color_type {
             ColorType::Rgba => {
@@ -59,9 +62,9 @@ impl<'a> Pngquant<'a> {
                         path,
                         reader,
                         speed,
-                        quality_minimum,
-                        quality_target,
-                        def_quality_target,
+                        quality_min,
+                        quality_max,
+                        def_quality_max,
                         dithering_level,
                         progress_sender,
                         original_size,
@@ -71,7 +74,7 @@ impl<'a> Pngquant<'a> {
                         id,
                         path,
                         reader,
-                        def_quality_target,
+                        def_quality_max,
                         dithering_level,
                         progress_sender,
                         original_size,
@@ -88,9 +91,9 @@ impl<'a> Pngquant<'a> {
         id: usize,
         path: &'a Path,
         mut reader: Reader<File>,
-        def_quality_target: u8,
+        def_quality_max: u8,
         dithering_level: Option<f32>,
-        progress_sender: SyncSender<Status>,
+        progress_sender: SyncSender<Progress>,
         original_size: u64,
     ) -> Pngquant<'a> {
         let mut buf = vec![0; reader.output_buffer_size()];
@@ -104,7 +107,7 @@ impl<'a> Pngquant<'a> {
             frames: None,
             histogram: None,
             imagequant_attr: None,
-            def_quality_target,
+            def_quality_max,
             dithering_level,
             progress_sender,
             original_size: Some(original_size),
@@ -118,11 +121,11 @@ impl<'a> Pngquant<'a> {
         path: &'a Path,
         mut reader: Reader<File>,
         speed: Option<u8>,
-        quality_minimum: Option<u8>,
-        quality_target: Option<u8>,
-        def_quality_target: u8,
+        quality_min: Option<u8>,
+        quality_max: Option<u8>,
+        def_quality_max: u8,
         dithering_level: Option<f32>,
-        progress_sender: SyncSender<Status>,
+        progress_sender: SyncSender<Progress>,
         original_size: u64,
     ) -> Pngquant<'a> {
         let mut frames: Vec<Frame> = vec![];
@@ -134,12 +137,9 @@ impl<'a> Pngquant<'a> {
         attr.set_progress_callback(move |progress| {
             // 将进度发送到主线程
             sender
-                .send(Status {
+                .send(Progress {
                     id,
-                    status: WorkStatus::PROGRESS,
-                    original_size,
-                    progress,
-                    size: 0,
+                    value: progress,
                 })
                 .unwrap();
             imagequant::ControlFlow::Continue
@@ -151,15 +151,13 @@ impl<'a> Pngquant<'a> {
         }
 
         // 默认质量的参数设置
-        match (quality_minimum, quality_target) {
-            (Some(quality_minimum), Some(quality_target)) => {
-                attr.set_quality(quality_minimum, quality_target).unwrap()
+        match (quality_min, quality_max) {
+            (Some(quality_min), Some(quality_max)) => {
+                attr.set_quality(quality_min, quality_max).unwrap()
             }
-            (Some(quality_minimum), None) => attr
-                .set_quality(quality_minimum, def_quality_target)
-                .unwrap(),
-            (None, Some(quality_target)) => attr.set_quality(0, quality_target).unwrap(),
-            (None, None) => attr.set_quality(0, def_quality_target).unwrap(),
+            (Some(quality_min), None) => attr.set_quality(quality_min, def_quality_max).unwrap(),
+            (None, Some(quality_max)) => attr.set_quality(0, quality_max).unwrap(),
+            (None, None) => attr.set_quality(0, def_quality_max).unwrap(),
         }
 
         // 为多个图像生成一个共享调色板
@@ -211,7 +209,7 @@ impl<'a> Pngquant<'a> {
             frames: Some(frames),
             histogram: Some(histogram),
             imagequant_attr: Some(attr),
-            def_quality_target,
+            def_quality_max,
             dithering_level,
             progress_sender,
             original_size: Some(original_size),
@@ -224,21 +222,14 @@ impl<'a> Pngquant<'a> {
         &mut self,
         path: &Path,
         speed: Option<u8>,
-        quality_minimum: Option<u8>,
-        quality_target: Option<u8>,
+        quality_min: Option<u8>,
+        quality_max: Option<u8>,
         compression: Compression,
     ) {
         // 是否是apng根据类型执行不同的逻辑
         if let Some(bytes) = &self.bytes {
             let bytes = bytes.to_vec();
-            self.encoder_png(
-                bytes,
-                path,
-                speed,
-                quality_minimum,
-                quality_target,
-                compression,
-            )
+            self.encoder_png(bytes, path, speed, quality_min, quality_max, compression)
         }
         if let Some(_) = &self.frames {
             self.encoder_apng(path, compression)
@@ -335,13 +326,7 @@ impl<'a> Pngquant<'a> {
                 // 结束工作发送总进度
                 let progress_sender = self.progress_sender.clone();
                 progress_sender
-                    .send(Status {
-                        id,
-                        status: WorkStatus::PROGRESS,
-                        original_size: self.original_size.unwrap(),
-                        progress: PROGRESS_CONSTANT,
-                        size: 0,
-                    })
+                    .send(Progress { id, value: PROGRESS_CONSTANT })
                     .unwrap();
 
                 // 记录压缩后的文件大小
@@ -357,26 +342,22 @@ impl<'a> Pngquant<'a> {
         bytes: Vec<imagequant::RGBA>,
         path: &Path,
         speed: Option<u8>,
-        quality_minimum: Option<u8>,
-        quality_target: Option<u8>,
+        quality_min: Option<u8>,
+        quality_max: Option<u8>,
         compression: Compression,
     ) {
         let info = self.reader.info();
         let mut attr = imagequant::new();
         let progress_sender = self.progress_sender.clone();
         let id = self.id;
-        let original_size=  self.original_size.unwrap();
 
         // 调色板生成进度更新回调
         attr.set_progress_callback(move |progress| {
             // 将进度发送到主线程
             progress_sender
-                .send(Status {
+                .send(Progress {
                     id,
-                    status: WorkStatus::PROGRESS,
-                    original_size,
-                    progress,
-                    size: 0,
+                    value: progress,
                 })
                 .unwrap();
             imagequant::ControlFlow::Continue
@@ -386,15 +367,15 @@ impl<'a> Pngquant<'a> {
         if let Some(speed) = speed {
             attr.set_speed(speed as i32).unwrap();
         }
-        match (quality_minimum, quality_target) {
-            (Some(quality_minimum), Some(quality_target)) => {
-                attr.set_quality(quality_minimum, quality_target).unwrap()
+        match (quality_min, quality_max) {
+            (Some(quality_min), Some(quality_max)) => {
+                attr.set_quality(quality_min, quality_max).unwrap()
             }
-            (Some(quality_minimum), None) => attr
-                .set_quality(quality_minimum, self.def_quality_target)
-                .unwrap(),
-            (None, Some(quality_target)) => attr.set_quality(0, quality_target).unwrap(),
-            (None, None) => attr.set_quality(0, self.def_quality_target).unwrap(),
+            (Some(quality_min), None) => {
+                attr.set_quality(quality_min, self.def_quality_max).unwrap()
+            }
+            (None, Some(quality_max)) => attr.set_quality(0, quality_max).unwrap(),
+            (None, None) => attr.set_quality(0, self.def_quality_max).unwrap(),
         }
 
         // 描述位图
@@ -440,13 +421,7 @@ impl<'a> Pngquant<'a> {
         let progress_sender = self.progress_sender.clone();
         // 结束工作发送总进度
         progress_sender
-            .send(Status {
-                id,
-                status: WorkStatus::PROGRESS,
-                original_size,
-                progress: PROGRESS_CONSTANT,
-                size: 0,
-            })
+            .send(Progress { id, value: PROGRESS_CONSTANT })
             .unwrap();
 
         // 记录压缩后的文件大小

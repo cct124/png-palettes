@@ -27,7 +27,7 @@ export default function Button({
   children?: JSX.Element | JSX.Element[] | string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
   type?: BUTTON_TYPE;
-  className?: string | undefined;
+  className?: string;
 }) {
   const [theme] = useContext(ThemeStateContext);
 

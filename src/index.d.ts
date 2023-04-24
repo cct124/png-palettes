@@ -11,3 +11,38 @@ interface Window {
    */
   classNames: classNames;
 }
+
+interface WorkListType {
+  /**
+   * 工作任务id
+   */
+  id: number;
+  /**
+   * 文件名称
+   */
+  fileName: string;
+  /**
+   * 工作路径
+   */
+  path: string;
+  /**
+   * 工作状态
+   */
+  status: string;
+  /**
+   * 工作进度
+   */
+  progress: number;
+  /**
+   * 源文件大小
+   */
+  originalSize: number;
+  /**
+   * 压缩后文件大小
+   */
+  size: number;
+  /**
+   * base64数据
+   */
+  base64: string;
+}

@@ -1,9 +1,12 @@
-import { useRef, useEffect, useContext } from "react";
+import { useRef, useEffect, Dispatch, SetStateAction } from "react";
 import styles from "./index.module.scss";
-import Button, { BUTTON_TYPE } from "@src/components/UI/Button";
-import * as dialog from "@tauri-apps/api/dialog";
+import Button from "@src/components/UI/Button";
 
-export default function DropContainer() {
+export default function DropContainer({
+  onOpenFile,
+}: {
+  onOpenFile: () => void;
+}) {
   const drop = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,19 +41,6 @@ export default function DropContainer() {
     e.stopPropagation();
   }
 
-  async function openFile() {
-    const selected = await dialog.open({
-      multiple: true,
-      filters: [
-        {
-          name: "Image",
-          extensions: ["png"],
-        },
-      ],
-    });
-    console.log(selected);
-  }
-
   return (
     <div
       ref={drop}
@@ -63,7 +53,7 @@ export default function DropContainer() {
     >
       <Button
         className={classNames(styles.openFile, "fs-14")}
-        onClick={openFile}
+        onClick={onOpenFile}
       >
         选择文件
       </Button>

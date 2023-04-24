@@ -3,25 +3,29 @@
     windows_subsystem = "windows"
 )]
 
-use png_libimagequant;
-use tauri::{Manager, WindowEvent};
+mod compression;
+use tauri::Manager;
 use window_shadows::set_shadow;
-
-fn handle() {
-    // png_libimagequant::Optimization::new(
-    //     speed,
-    //     quality_minimum,
-    //     quality_target,
-    //     dithering_level,
-    //     compression,
-    //     exclude,
-    //     worklist,
-    // )
-}
+use compression::compression_handle;
 
 // #[tauri::command]
-// fn greet(name: &str) -> String {
-//     format!("Hello, {}!", name)
+// fn handle(list: Vec<String>) {
+//     println!("{:#?}", list);
+//     let mut worklist: Vec<Work> = vec![];
+//     for (i, f) in list.iter().enumerate() {
+//         let path = Path::new(f).to_path_buf();
+//         worklist.push(Work {
+//             id: i,
+//             path: path,
+//             status: WorkStatus::INIT,
+//             progress: 0,
+//             original_size: 0,
+//             size: 0,
+//         })
+//     }
+
+//     let mut optimization = Optimization::new(None, None, None, None, None, &mut worklist);
+//     optimization.run_worklist();
 // }
 
 fn main() {
@@ -31,7 +35,7 @@ fn main() {
             set_shadow(&window, true).expect("Unsupported platform!");
             Ok(())
         })
-        .invoke_handler(tauri::generate_handler![])
+        .invoke_handler(tauri::generate_handler![compression_handle])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

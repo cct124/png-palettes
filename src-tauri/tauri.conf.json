@@ -23,6 +23,9 @@
         "unminimize": true,
         "startDragging": true
       },
+      "fs": {
+        "readFile": true
+      },
       "dialog": {
         "all": false,
         "open": true,

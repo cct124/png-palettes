@@ -1,0 +1,16 @@
+.work {
+  $h: 60px;
+  .preview {
+    width: $h;
+    height: $h;
+    background-color: var(--chakra-colors-gray-100);
+    img {
+      width: $h;
+      height: $h;
+    }
+    svg {
+      width: $h - 20px;
+      height: $h - 20px;
+    }
+  }
+}

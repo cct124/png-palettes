@@ -15,7 +15,7 @@ const appName = await getName();
  * @returns
  */
 export default function Container() {
-  const [theme, setTheme] = useContext(ThemeStateContext);
+  const [theme] = useContext(ThemeStateContext);
   /**
    * 按钮
    */
