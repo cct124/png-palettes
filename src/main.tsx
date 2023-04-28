@@ -6,6 +6,7 @@ import "./styles/public.scss";
 import "./styles/index.scss";
 import { classNames } from "./utils/tools";
 import Theming from "@src/components/Theming";
+import I18n from "@src/components/I18n";
 
 /**
  * css 类名处理全局注入
@@ -15,7 +16,9 @@ window.classNames = classNames;
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Theming>
-      <App />
+      <I18n>
+        <App />
+      </I18n>
     </Theming>
   </React.StrictMode>
 );

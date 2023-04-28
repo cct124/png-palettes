@@ -1,12 +1,14 @@
-import { useRef, useEffect, Dispatch, SetStateAction } from "react";
+import { useRef, useEffect, useContext } from "react";
 import styles from "./index.module.scss";
 import Button from "@src/components/UI/Button";
+import { I18n } from "@src/context/i18n";
 
 export default function DropContainer({
   onOpenFile,
 }: {
   onOpenFile: () => void;
 }) {
+  const [i18n] = useContext(I18n);
   const drop = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export default function DropContainer({
         className={classNames(styles.openFile, "fs-14")}
         onClick={onOpenFile}
       >
-        选择文件
+        {i18n.workArea.dropContainer.openFile}
       </Button>
     </div>
   );

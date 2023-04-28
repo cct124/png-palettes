@@ -1,16 +1,84 @@
 .work {
   $h: 60px;
+  $ptb: 3px;
+  padding: $ptb 0;
+  height: $h;
+  margin: 0 0 5px;
+
   .preview {
+    $is: $h - $ptb * 2;
     width: $h;
     height: $h;
-    background-color: var(--chakra-colors-gray-100);
+
     img {
-      width: $h;
-      height: $h;
+      padding: 5px;
+      width: $is;
+      height: $is;
     }
+
     svg {
       width: $h - 20px;
       height: $h - 20px;
+    }
+  }
+
+  .path {
+    letter-spacing: 0.5px;
+  }
+
+  &.light {
+    transition: all 0.3s;
+    box-shadow: 1px 1px 2px 1px rgba(29, 28, 31, 0.07);
+
+    &:hover {
+      box-shadow: 1px 1px 2px 1px rgba(29, 28, 31, 0.15);
+    }
+    &:nth-child(odd) {
+      &::before {
+        background-color: var(--chakra-colors-orange-400);
+      }
+    }
+    &:nth-child(even) {
+      &::before {
+        background-color: var(--chakra-colors-messenger-400);
+      }
+    }
+
+    &::before {
+      content: " ";
+      width: 2px;
+      height: $h;
+      position: relative;
+      z-index: 1;
+    }
+  }
+  &.dark {
+    background-color: rgba(137, 148, 167, 0.1);
+    box-shadow: 1px 1px 2px 1px rgba(29, 28, 31, 0.07);
+
+    &:hover {
+      box-shadow: 1px 1px 2px 1px rgba(29, 28, 31, 0.4);
+    }
+    &:nth-child(odd) {
+      &::before {
+        background-color: var(--chakra-colors-orange-600);
+      }
+    }
+    &:nth-child(even) {
+      &::before {
+        background-color: var(--chakra-colors-messenger-600);
+      }
+    }
+
+    &::before {
+      content: " ";
+      width: 2px;
+      height: $h;
+      position: relative;
+      z-index: 1;
+    }
+    .preview {
+      background-color: var(--chakra-colors-gray-800);
     }
   }
 }

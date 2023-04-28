@@ -3,7 +3,7 @@ import styles from "./index.module.scss";
 import { invoke } from "@tauri-apps/api/tauri";
 import DropContainer from "./DropContainer";
 import * as dialog from "@tauri-apps/api/dialog";
-import { listen } from "@tauri-apps/api/event";
+import { listen, UnlistenFn } from "@tauri-apps/api/event";
 import Works from "./Works";
 
 const works: WorkListType[] = [];
@@ -16,23 +16,37 @@ export default function WorkArea() {
   const [workList, setWorkList] = useState<WorkListType[]>([]);
 
   useEffect(() => {
-    let unlistenFn: any;
+    let filesInfoUnlistenFn: UnlistenFn;
+    let progressUnlistenFn: UnlistenFn;
     listen(
-      "file-info",
-      ({ payload }: { payload: [number, string, string] }) => {
-        const [id, fileName, base64] = payload;
-        console.log(id, fileName, base64)
-        for (const iter of works) {
-          if (iter.id === id) {
-            iter.fileName = fileName;
-            iter.base64 = base64;
+      "files-info",
+      ({ payload }: { payload: [number, string, string][] }) => {
+        // console.log(payload);
+        for (const [id, fileName, base64] of payload) {
+          const work = works.find((w) => w.id === id);
+          if (work) {
+            work.fileName = fileName;
+            work.base64 = base64;
           }
         }
         setWorkList(works);
       }
-    ).then((_unlistenFn) => (unlistenFn = _unlistenFn));
+    ).then((_unlistenFn) => (filesInfoUnlistenFn = _unlistenFn));
+
+    listen("progress", ({ payload }: { payload: [number, number] }) => {
+      const [id, progress] = payload;
+      const work = works.find((w) => w.id === id);
+      if (work) {
+        work.progress = progress;
+      }
+      console.log(works)
+      setWorkList(works);
+    }).then((_unlistenFn) => (progressUnlistenFn = _unlistenFn));
+
+    
     return () => {
-      if (unlistenFn) unlistenFn();
+      if (filesInfoUnlistenFn) filesInfoUnlistenFn();
+      if (progressUnlistenFn) progressUnlistenFn();
     };
   }, []);
 
@@ -66,9 +80,9 @@ export default function WorkArea() {
       });
   }
 
-  useEffect(() => {
-    console.log(workList);
-  }, [workList]);
+  // useEffect(() => {
+  //   console.log(workList);
+  // }, [workList]);
 
   const area =
     workList.length === 0 ? (

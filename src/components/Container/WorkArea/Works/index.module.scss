@@ -1,0 +1,60 @@
+.works {
+  //   padding-top: 10px;
+  .top {
+    // &::-webkit-scrollbar {
+    //   display: none;
+    // }
+    &.light {
+      &::-webkit-scrollbar {
+        width: 4px;
+        //   height: 2px;
+        background-color: rgba(86, 86, 86, 0.15);
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(86, 86, 86, 0.2);
+        border-radius: 4px;
+      }
+    }
+    &.dark {
+      &::-webkit-scrollbar {
+        width: 4px;
+        //   height: 2px;
+        background-color: transparent;
+      }
+      &::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 4px;
+      }
+    }
+  }
+
+  .filesInfo {
+    $h: 25px;
+    height: $h;
+    right: 20px;
+    bottom: 10px;
+    pointer-events: none;
+
+    .info {
+      min-width: 80px;
+      height: $h;
+      border-radius: 4px;
+      pointer-events: all;
+    }
+
+    &.light {
+      .info {
+        background-color: #fff;
+        box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.08);
+        color: var(--chakra-colors-messenger-650);
+      }
+    }
+
+    &.dark {
+      .info {
+        background-color: var(--chakra-colors-gray-900);
+        box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.08);
+      }
+    }
+  }
+}
