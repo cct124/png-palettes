@@ -15,7 +15,7 @@ export default function OptionsArea() {
       className={classNames(
         styles.optionsArea,
         styles[theme],
-        "flex-jcfs-aic flex-column"
+        "flex-jcfs-aic flex-column shrink"
       )}
     >
       <Options></Options>

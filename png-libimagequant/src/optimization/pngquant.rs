@@ -1,6 +1,11 @@
 use imagequant::Histogram;
 use png::{ColorType, Compression, Decoder, Reader};
-use std::{fs::File, io::BufWriter, path::Path, sync::mpsc::SyncSender};
+use std::{
+    fs::{metadata, File},
+    io::BufWriter,
+    path::Path,
+    sync::mpsc::SyncSender,
+};
 
 use super::Frame;
 use crate::{error::Error, PROGRESS_CONSTANT};
@@ -326,12 +331,14 @@ impl<'a> Pngquant<'a> {
                 // 结束工作发送总进度
                 let progress_sender = self.progress_sender.clone();
                 progress_sender
-                    .send(Progress { id, value: PROGRESS_CONSTANT })
+                    .send(Progress {
+                        id,
+                        value: PROGRESS_CONSTANT,
+                    })
                     .unwrap();
 
                 // 记录压缩后的文件大小
-                let file = File::open(path).unwrap();
-                let size = file.metadata().unwrap().len();
+                let size = metadata(path).unwrap().len();
                 self.set_size(size);
             }
         }
@@ -421,12 +428,14 @@ impl<'a> Pngquant<'a> {
         let progress_sender = self.progress_sender.clone();
         // 结束工作发送总进度
         progress_sender
-            .send(Progress { id, value: PROGRESS_CONSTANT })
+            .send(Progress {
+                id,
+                value: PROGRESS_CONSTANT,
+            })
             .unwrap();
-
+        writer.finish().unwrap();
         // 记录压缩后的文件大小
-        let file = File::open(path).unwrap();
-        let size = file.metadata().unwrap().len();
+        let size = metadata(path).unwrap().len();
         self.set_size(size);
     }
 

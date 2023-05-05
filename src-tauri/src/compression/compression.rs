@@ -1,9 +1,7 @@
 use base64::{engine::general_purpose, Engine as _};
 use mime::Mime;
-use png_libimagequant::{PROGRESS_CONSTANT, PROGRESS_COMPLETE};
 use png_libimagequant::optimization::{Optimization, Work, WorkStatus};
-use std::fmt;
-use std::io::Error;
+use png_libimagequant::{PROGRESS_COMPLETE, PROGRESS_CONSTANT};
 use std::io::Read;
 use std::{fs, io, path::Path};
 use tauri;
@@ -42,9 +40,12 @@ pub async fn compression_handle(window: tauri::Window, list: Vec<(usize, String)
     optimization.run_worklist(
         |work| {
             let progress = (work.progress as f32) / PROGRESS_CONSTANT * PROGRESS_COMPLETE;
-            window.emit("progress", (work.id, progress.round())).unwrap()
+            window
+                .emit("progress", (work.id, progress.round()))
+                .unwrap()
         },
         |work| {
+            let progress = (work.progress as f32) / PROGRESS_CONSTANT * PROGRESS_COMPLETE;
             let status = match work.status {
                 WorkStatus::INIT => "INIT",
                 WorkStatus::WAIT => "WAIT",
@@ -54,13 +55,7 @@ pub async fn compression_handle(window: tauri::Window, list: Vec<(usize, String)
             window
                 .emit(
                     "status",
-                    (
-                        work.id,
-                        status,
-                        work.progress,
-                        work.original_size,
-                        work.size,
-                    ),
+                    (work.id, status, progress, work.original_size, work.size),
                 )
                 .unwrap()
         },

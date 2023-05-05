@@ -1,7 +1,7 @@
 .work {
   $h: 60px;
   $ptb: 3px;
-  padding: $ptb 0;
+  padding: $ptb 20px $ptb 0;
   height: $h;
   margin: 0 0 5px;
 
@@ -22,34 +22,76 @@
     }
   }
 
+  .left {
+    width: 80%;
+  }
+
   .path {
     letter-spacing: 0.5px;
+  }
+
+  &::before {
+    content: " ";
+    width: 2px;
+    height: $h;
+    position: absolute;
+    z-index: 1;
   }
 
   &.light {
     transition: all 0.3s;
     box-shadow: 1px 1px 2px 1px rgba(29, 28, 31, 0.07);
 
-    &:hover {
-      box-shadow: 1px 1px 2px 1px rgba(29, 28, 31, 0.15);
-    }
-    &:nth-child(odd) {
-      &::before {
-        background-color: var(--chakra-colors-orange-400);
+    &.END {
+      .path {
+        color: var(--chakra-colors-messenger-550);
       }
-    }
-    &:nth-child(even) {
+
       &::before {
         background-color: var(--chakra-colors-messenger-400);
       }
     }
 
+    &.UNHANDLED {
+      .preview {
+        filter: grayscale(1);
+      }
+
+      .right {
+        .unhandled {
+          color: var(--chakra-colors-red-550);
+        }
+      }
+    }
+
+    &:hover {
+      box-shadow: 1px 1px 2px 1px rgba(29, 28, 31, 0.15);
+    }
+
     &::before {
-      content: " ";
-      width: 2px;
-      height: $h;
-      position: relative;
-      z-index: 1;
+      background-color: var(--chakra-colors-orange-400);
+    }
+    // &:nth-child(odd) {
+    //   &::before {
+    //     background-color: var(--chakra-colors-orange-400);
+    //   }
+    // }
+    // &:nth-child(even) {
+    //   &::before {
+    //     background-color: var(--chakra-colors-messenger-400);
+    //   }
+    // }
+
+    .fileInfo {
+      color: var(--chakra-colors-light-green-750);
+      .rightArrow,
+      .downArrow {
+        fill: var(--chakra-colors-light-green-750);
+      }
+    }
+
+    .progress {
+      color: var(--chakra-colors-messenger-550);
     }
   }
   &.dark {
@@ -59,26 +101,65 @@
     &:hover {
       box-shadow: 1px 1px 2px 1px rgba(29, 28, 31, 0.4);
     }
-    &:nth-child(odd) {
+
+    &.END {
       &::before {
-        background-color: var(--chakra-colors-orange-600);
-      }
-    }
-    &:nth-child(even) {
-      &::before {
-        background-color: var(--chakra-colors-messenger-600);
+        background-color: var(--chakra-colors-messenger-400);
       }
     }
 
     &::before {
-      content: " ";
-      width: 2px;
-      height: $h;
-      position: relative;
-      z-index: 1;
+      background-color: var(--chakra-colors-orange-600);
     }
-    .preview {
-      background-color: var(--chakra-colors-gray-800);
+
+    // &:nth-child(odd) {
+    //   &::before {
+    //     background-color: var(--chakra-colors-orange-600);
+    //   }
+    // }
+    // &:nth-child(even) {
+    //   &::before {
+    //     background-color: var(--chakra-colors-messenger-600);
+    //   }
+    // }
+
+    &.UNHANDLED {
+      .preview {
+        filter: grayscale(1);
+      }
+
+      .right {
+        .unhandled {
+          color: var(--chakra-colors-red-450);
+        }
+      }
+    }
+
+    .fileInfo {
+      color: var(--chakra-colors-light-green-300);
+      .rightArrow,
+      .downArrow {
+        fill: var(--chakra-colors-light-green-300);
+      }
+    }
+
+    .progress {
+      color: var(--chakra-colors-messenger-550);
+    }
+  }
+
+  .fileInfo {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    .rightArrow {
+      width: 18px;
+      height: 10px;
+    }
+    .downArrow {
+      width: 15px;
+      height: 10px;
+      transform: rotate(90deg);
     }
   }
 }

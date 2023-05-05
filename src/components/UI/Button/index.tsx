@@ -2,7 +2,7 @@ import { useContext } from "react";
 import styles from "./index.module.scss";
 import { ThemeStateContext } from "@src/context/theming";
 
-export enum BUTTON_TYPE {
+export enum ButtonType {
   /**
    * 默认
    */
@@ -11,6 +11,10 @@ export enum BUTTON_TYPE {
    * 主要的
    */
   PRIMARY = "primary",
+  /**
+   * 警告
+   */
+  WARNING = "warning",
 }
 
 /**
@@ -21,12 +25,12 @@ export enum BUTTON_TYPE {
 export default function Button({
   children,
   onClick,
-  type = BUTTON_TYPE.DEFAULT,
+  type = ButtonType.DEFAULT,
   className,
 }: {
   children?: JSX.Element | JSX.Element[] | string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-  type?: BUTTON_TYPE;
+  type?: ButtonType;
   className?: string;
 }) {
   const [theme] = useContext(ThemeStateContext);

@@ -12,7 +12,7 @@ export interface WorkListType {
   /**
    * 工作状态
    */
-  status: string;
+  status: WorkStatus;
   /**
    * 工作进度
    */
@@ -25,6 +25,13 @@ export interface WorkListType {
    * 压缩后文件大小
    */
   size: number;
+}
+
+export enum WorkStatus {
+  INIT = "INIT",
+  WAIT = "WAIT",
+  END = "END",
+  UNHANDLED = "UNHANDLED",
 }
 
 export const WorkList = createContext<WorkListType[]>([]);
