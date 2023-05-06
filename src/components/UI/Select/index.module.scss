@@ -1,0 +1,121 @@
+.select {
+  .input {
+    user-select: none;
+    cursor: pointer;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .options {
+    position: fixed;
+    .option {
+      cursor: pointer;
+    }
+  }
+}
+
+.default {
+  $w: 100px !default;
+  $h: 20px !default;
+  width: $w;
+  height: $h;
+  .input {
+    width: $w;
+    height: $h;
+    border-radius: 3px;
+    padding: 0 5px;
+    font-size: 12px;
+  }
+  .options {
+    width: $w;
+    border-radius: 3px;
+    top: calc($h + 2px);
+    max-height: 100px;
+    overflow-y: scroll;
+
+    .option {
+      padding: 0 5px;
+      font-size: 12px;
+      line-height: 20px;
+    }
+  }
+}
+
+.light {
+  &.expansion {
+    .input {
+      border: 1px solid var(--chakra-colors-messenger-550);
+      &:hover {
+        border: 1px solid var(--chakra-colors-messenger-550);
+      }
+    }
+  }
+  .input {
+    background-color: white;
+    border: 1px solid var(--chakra-colors-gray-250);
+
+    &:hover {
+      border: 1px solid var(--chakra-colors-gray-300);
+    }
+  }
+  .options {
+    background-color: white;
+    box-shadow: 0px 0px 6px 0px rgba(45, 45, 45, 0.12);
+    &::-webkit-scrollbar {
+      width: 4px;
+      //   height: 2px;
+      // background-color: rgba(86, 86, 86, 0.15);
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(86, 86, 86, 0.2);
+      border-radius: 4px;
+    }
+
+    .option {
+      &:hover {
+        background-color: var(--chakra-colors-gray-50);
+      }
+    }
+  }
+}
+
+.dark {
+  &.expansion {
+    .input {
+      border: 1px solid var(--chakra-colors-gray-600);
+      &:hover {
+        border: 1px solid var(--chakra-colors-gray-600);
+      }
+    }
+  }
+  .input {
+    background-color: var(--chakra-colors-gray-850);
+    border: 1px solid var(--chakra-colors-gray-750);
+    color: var(--chakra-colors-gray-100);
+
+    &:hover {
+      border: 1px solid var(--chakra-colors-gray-650);
+    }
+  }
+  .options {
+    background-color: var(--chakra-colors-gray-850);
+    box-shadow: 0px 0px 4px 0px rgb(19, 19, 19);
+    &::-webkit-scrollbar {
+      width: 4px;
+      //   height: 2px;
+      // background-color: rgba(86, 86, 86, 0.15);
+    }
+    &::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2);
+      border-radius: 4px;
+    }
+
+    .option {
+      &:hover {
+        background-color: var(--chakra-colors-gray-750);
+      }
+    }
+  }
+}

@@ -2,9 +2,9 @@ import { useContext } from "react";
 import { appWindow } from "@tauri-apps/api/window";
 import { getName } from "@tauri-apps/api/app";
 import styles from "./index.module.scss";
-import { ReactComponent as CloseSvg } from "../../assets/icons/svg/close.svg"; // 关闭图标
-import { ReactComponent as MinimizeSvg } from "../../assets/icons/svg/minimize.svg"; // 最小化图标
-import WindowSizeControl from "./WindowSizeControl";
+import { ReactComponent as CloseSvg } from "@src/assets/icons/svg/close.svg"; // 关闭图标
+import { ReactComponent as MinimizeSvg } from "@src/assets/icons/svg/minimize.svg"; // 最小化图标
+import WindowSizeControl from "./windowSizeControl";
 import logoSrc from "@assets/icons/img/logo.png";
 import { ThemeStateContext, THEMING_TYPE } from "@src/context/theming";
 

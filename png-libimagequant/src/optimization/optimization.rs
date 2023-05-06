@@ -45,7 +45,7 @@ impl<'a> Optimization<'a> {
         quality_minimum: Option<u8>,
         quality_target: Option<u8>,
         dithering_level: Option<f32>,
-        exclude: Option<Vec<String>>,
+        compression: Option<Compression>,
         worklist: &'a mut Vec<Work>,
     ) -> Optimization<'a> {
         // 系统并行资源
@@ -60,6 +60,12 @@ impl<'a> Optimization<'a> {
 
         let extension = vec!["png"];
 
+        let compression = if let Some(compression) = compression {
+            compression
+        } else {
+            Compression::Default
+        };
+
         Optimization {
             // path,
             speed,
@@ -70,7 +76,7 @@ impl<'a> Optimization<'a> {
             thread_pool,
             end_num: 0,
             dithering_level: Some(dithering_level.unwrap_or(1.0)),
-            compression: Compression::Default,
+            compression,
             start_time,
             process_file_num: 0,
         }

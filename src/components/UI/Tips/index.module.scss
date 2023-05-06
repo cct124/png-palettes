@@ -1,0 +1,25 @@
+.tips {
+  &:hover {
+    .content {
+      visibility: visible;
+    }
+  }
+  .content {
+    position: fixed;
+    z-index: 1;
+    padding: 8px;
+    font-size: 12px;
+    line-height: 16px;
+    border-radius: 4px;
+    min-width: 300px;
+    max-width: 400px;
+    visibility: hidden;
+    // display: none;
+  }
+  &.light {
+    .content {
+      background-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0px 0px 6px 0px rgba(2, 2, 2, 0.1);
+    }
+  }
+}

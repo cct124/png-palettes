@@ -43,6 +43,55 @@ export interface I18N_TYPE {
       };
     };
   };
+  optionsArea: {
+    /**
+     * 配置选项
+     */
+    options: {
+      /**
+       * 压缩速度
+       */
+      speed: string;
+      /**
+       * 1 - 10。
+       * 更快的速度生成质量较低的图像，但对于实时生成图像可能有用。
+       * 默认值是4。
+       */
+      speedTips: string;
+      /**
+       * 优化质量
+       */
+      quality: string;
+      /**
+       * 说明
+       */
+      qualityTips: string;
+      /**
+       * 质量最小值
+       */
+      qualityMinimum: string;
+      /**
+       * 质量目标值
+       */
+      qualityTarget: string;
+      /**
+       * 平滑参数
+       */
+      ditheringLevel: string;
+      /**
+       * 设置为1.0以获得平滑的图像
+       */
+      ditheringLevelTips: string;
+      /**
+       * 压缩等级
+       */
+      compression: string;
+      /**
+       * PNG编码器的压缩等级，默认是最小压缩
+       */
+      compressionTips: string;
+    };
+  };
 }
 
 export const zhCN: I18N_TYPE = {
@@ -59,6 +108,22 @@ export const zhCN: I18N_TYPE = {
       work: {
         unhandled: "不支持的图像格式",
       },
+    },
+  },
+  optionsArea: {
+    options: {
+      speed: "压缩速度",
+      speedTips:
+        "1 - 10，更快的速度生成质量较低的图像，\r\n对于实时生成图像可能有用。 默认值是4",
+      quality: "优化质量",
+      qualityTips:
+        "范围为0-100，大致类似于JPEG。\r\n如果无法满足最小质量，则量化将因错误而中止。\r\n默认值为最小0，最大100，这意味着尽力而为，并且永远不会中止过程。\r\n如果最大值小于100，则库将尝试使用更少的颜色。由于增加的抖动，颜色较少的图像并不总是更小。",
+      qualityMinimum: "最小值",
+      qualityTarget: "目标值",
+      ditheringLevel: "平滑参数",
+      ditheringLevelTips: "设置为1.0以获得平滑的图像",
+      compression: "压缩等级",
+      compressionTips: "PNG编码器的压缩等级，默认是最小压缩",
     },
   },
 };

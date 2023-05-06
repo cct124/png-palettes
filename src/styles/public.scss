@@ -449,6 +449,10 @@
   font-family: SimSun;
 }
 
+.tran-uni {
+  transition: all 0.3s;
+}
+
 /**
 * ---- font color ----
 */
@@ -458,13 +462,25 @@
 }
 
 .gradient {
-  background-image: -webkit-linear-gradient(40deg, #f7ca6a, #fefdda, #fef8ae, #f6c76a);
+  background-image: -webkit-linear-gradient(
+    40deg,
+    #f7ca6a,
+    #fefdda,
+    #fef8ae,
+    #f6c76a
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .gradient1 {
-  background-image: -webkit-linear-gradient(40deg, #ffe9b8, #fffff7, #fffcda, #ffe5b0);
+  background-image: -webkit-linear-gradient(
+    40deg,
+    #ffe9b8,
+    #fffff7,
+    #fffcda,
+    #ffe5b0
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
