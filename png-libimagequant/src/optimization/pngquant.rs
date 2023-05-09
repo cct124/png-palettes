@@ -1,5 +1,5 @@
 use imagequant::Histogram;
-use png::{ColorType, Compression, Decoder, Reader};
+use png::{ColorType, Compression, Decoder, DecodingError, Reader};
 use std::{
     fs::{metadata, File},
     io::BufWriter,
@@ -62,7 +62,7 @@ impl<'a> Pngquant<'a> {
             ColorType::Rgba => {
                 // 是否是apng
                 if info.is_animated() {
-                    Ok(Pngquant::decoder_rgba_apng(
+                    let pngquant = Pngquant::decoder_rgba_apng(
                         id,
                         path,
                         reader,
@@ -73,9 +73,10 @@ impl<'a> Pngquant<'a> {
                         dithering_level,
                         progress_sender,
                         original_size,
-                    ))
+                    )?;
+                    Ok(pngquant)
                 } else {
-                    Ok(Pngquant::decoder_rgba_png(
+                    if let Ok(pngquant) = Pngquant::decoder_rgba_png(
                         id,
                         path,
                         reader,
@@ -83,7 +84,11 @@ impl<'a> Pngquant<'a> {
                         dithering_level,
                         progress_sender,
                         original_size,
-                    ))
+                    ) {
+                        Ok(pngquant)
+                    } else {
+                        Err(Error::Unsupported)
+                    }
                 }
             }
             // ColorType::Indexed => Err(Error::UnsupportedColorMode),
@@ -100,11 +105,11 @@ impl<'a> Pngquant<'a> {
         dithering_level: Option<f32>,
         progress_sender: SyncSender<Progress>,
         original_size: u64,
-    ) -> Pngquant<'a> {
+    ) -> Result<Pngquant<'a>, DecodingError> {
         let mut buf = vec![0; reader.output_buffer_size()];
-        let output_info = reader.next_frame(&mut buf).unwrap();
+        let output_info = reader.next_frame(&mut buf)?;
         let bytes = Some(rgb::FromSlice::as_rgba(&buf[..output_info.buffer_size()]).to_vec());
-        Pngquant {
+        Ok(Pngquant {
             id,
             path,
             reader,
@@ -117,7 +122,7 @@ impl<'a> Pngquant<'a> {
             progress_sender,
             original_size: Some(original_size),
             size: None,
-        }
+        })
     }
 
     /// 解码rgba的apng图像数据
@@ -132,7 +137,7 @@ impl<'a> Pngquant<'a> {
         dithering_level: Option<f32>,
         progress_sender: SyncSender<Progress>,
         original_size: u64,
-    ) -> Pngquant<'a> {
+    ) -> Result<Pngquant<'a>, Error> {
         let mut frames: Vec<Frame> = vec![];
         // 因为要为多个图像生成一个共享调色板，所以要提前生成
         let mut attr = imagequant::new();
@@ -152,17 +157,17 @@ impl<'a> Pngquant<'a> {
 
         // 设置压缩算法执行速度
         if let Some(speed) = speed {
-            attr.set_speed(speed as i32).unwrap();
+            attr.set_speed(speed as i32)?
         }
 
         // 默认质量的参数设置
         match (quality_min, quality_max) {
             (Some(quality_min), Some(quality_max)) => {
-                attr.set_quality(quality_min, quality_max).unwrap()
+                attr.set_quality(quality_min, quality_max)?
             }
-            (Some(quality_min), None) => attr.set_quality(quality_min, def_quality_max).unwrap(),
-            (None, Some(quality_max)) => attr.set_quality(0, quality_max).unwrap(),
-            (None, None) => attr.set_quality(0, def_quality_max).unwrap(),
+            (Some(quality_min), None) => attr.set_quality(quality_min, def_quality_max)?,
+            (None, Some(quality_max)) => attr.set_quality(0, quality_max)?,
+            (None, None) => attr.set_quality(0, def_quality_max)?
         }
 
         // 为多个图像生成一个共享调色板
@@ -195,10 +200,9 @@ impl<'a> Pngquant<'a> {
                         control.width as usize,
                         control.height as usize,
                         0.0,
-                    )
-                    .unwrap();
+                    )?;
                     // 保存图像直方图，用于稍后的调色板生成
-                    histogram.add_image(&attr, &mut image).unwrap();
+                    histogram.add_image(&attr, &mut image)?;
                     frames.push(frame);
                 }
             } else {
@@ -206,7 +210,7 @@ impl<'a> Pngquant<'a> {
             }
         }
 
-        Pngquant {
+        Ok(Pngquant {
             id,
             path,
             reader,
@@ -219,7 +223,7 @@ impl<'a> Pngquant<'a> {
             progress_sender,
             original_size: Some(original_size),
             size: None,
-        }
+        })
     }
 
     // 编码png
@@ -230,19 +234,20 @@ impl<'a> Pngquant<'a> {
         quality_min: Option<u8>,
         quality_max: Option<u8>,
         compression: Compression,
-    ) {
+    ) -> Result<(), Error> {
         // 是否是apng根据类型执行不同的逻辑
         if let Some(bytes) = &self.bytes {
             let bytes = bytes.to_vec();
-            self.encoder_png(bytes, path, speed, quality_min, quality_max, compression)
+            self.encoder_png(bytes, path, speed, quality_min, quality_max, compression)?;
         }
         if let Some(_) = &self.frames {
-            self.encoder_apng(path, compression)
+            self.encoder_apng(path, compression)?;
         }
+        Ok(())
     }
 
     // 编码apng
-    fn encoder_apng(&mut self, path: &Path, compression: Compression) {
+    fn encoder_apng(&mut self, path: &Path, compression: Compression) -> Result<(), Error> {
         // apng对象数据
         if let (Some(histogram), Some(attr), Some(frames)) = (
             self.histogram.as_mut(),
@@ -250,10 +255,9 @@ impl<'a> Pngquant<'a> {
             self.frames.as_mut(),
         ) {
             // 为添加到直方图的所有图像/颜色生成调色板。
-            let mut res = histogram.quantize(&attr).unwrap();
+            let mut res = histogram.quantize(&attr)?;
             // 设置平滑图像参数
-            res.set_dithering_level(self.dithering_level.unwrap())
-                .unwrap();
+            res.set_dithering_level(self.dithering_level.unwrap())?;
             // 用于保存调色板
             let mut histogram_palette: Vec<imagequant::RGBA> = vec![];
 
@@ -342,6 +346,7 @@ impl<'a> Pngquant<'a> {
                 self.set_size(size);
             }
         }
+        Ok(())
     }
 
     fn encoder_png(
@@ -352,7 +357,7 @@ impl<'a> Pngquant<'a> {
         quality_min: Option<u8>,
         quality_max: Option<u8>,
         compression: Compression,
-    ) {
+    ) -> Result<(), Error> {
         let info = self.reader.info();
         let mut attr = imagequant::new();
         let progress_sender = self.progress_sender.clone();
@@ -372,36 +377,26 @@ impl<'a> Pngquant<'a> {
 
         // 设置压缩算法执行速度
         if let Some(speed) = speed {
-            attr.set_speed(speed as i32).unwrap();
+            attr.set_speed(speed as i32)?
         }
         match (quality_min, quality_max) {
-            (Some(quality_min), Some(quality_max)) => {
-                attr.set_quality(quality_min, quality_max).unwrap()
-            }
-            (Some(quality_min), None) => {
-                attr.set_quality(quality_min, self.def_quality_max).unwrap()
-            }
-            (None, Some(quality_max)) => attr.set_quality(0, quality_max).unwrap(),
-            (None, None) => attr.set_quality(0, self.def_quality_max).unwrap(),
+            (Some(quality_min), Some(quality_max)) => attr.set_quality(quality_min, quality_max)?,
+            (Some(quality_min), None) => attr.set_quality(quality_min, self.def_quality_max)?,
+            (None, Some(quality_max)) => attr.set_quality(0, quality_max)?,
+            (None, None) => attr.set_quality(0, self.def_quality_max)?,
         }
 
         // 描述位图
-        let mut img = attr
-            .new_image(&bytes[..], info.width as usize, info.height as usize, 0.0)
-            .unwrap();
+        let mut img = attr.new_image(&bytes[..], info.width as usize, info.height as usize, 0.0)?;
 
         // 生成调色板
-        let mut res = match attr.quantize(&mut img) {
-            Ok(res) => res,
-            Err(err) => panic!("Quantization failed, because: {:?}", err),
-        };
+        let mut res = attr.quantize(&mut img)?;
 
         // Enable dithering for subsequent remappings
-        res.set_dithering_level(self.dithering_level.unwrap())
-            .unwrap();
+        res.set_dithering_level(self.dithering_level.unwrap())?;
 
         // You can reuse the result to generate several images with the same palette
-        let (palette, pixels) = res.remapped(&mut img).unwrap();
+        let (palette, pixels) = res.remapped(&mut img)?;
 
         let mut rbg_palette: Vec<u8> = Vec::new();
         let mut trns: Vec<u8> = Vec::new();
@@ -437,6 +432,7 @@ impl<'a> Pngquant<'a> {
         // 记录压缩后的文件大小
         let size = metadata(path).unwrap().len();
         self.set_size(size);
+        Ok(())
     }
 
     /// 记录压缩后的文件大小

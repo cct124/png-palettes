@@ -1,5 +1,6 @@
 use base64::{engine::general_purpose, Engine as _};
 use mime::Mime;
+use png::Compression;
 use png_libimagequant::optimization::{Optimization, Work, WorkStatus};
 use png_libimagequant::{PROGRESS_COMPLETE, PROGRESS_CONSTANT};
 use std::io::Read;
@@ -10,8 +11,22 @@ use tauri;
 const PREVIEW_MAX_LEN: u64 = 10485760;
 
 #[tauri::command]
-pub async fn compression_handle(window: tauri::Window, list: Vec<(usize, String)>) {
-    println!("Window: {} \r\nList: {:#?}", window.label(), list);
+pub async fn compression_handle(
+    window: tauri::Window,
+    list: Vec<(usize, String)>,
+    speed: usize,
+    quality_minimum: usize,
+    quality_target: usize,
+    dithering_level: f32,
+    compression: String,
+) {
+    println!("Window: {} \r\nList: {:#?} ", window.label(), list,);
+    let compression = compression.as_str();
+    let compression = match compression {
+        "Best" => Compression::Best,
+        "Fast" => Compression::Fast,
+        _ => Compression::Default,
+    };
 
     let mut files_info = vec![];
     for (id, path) in list.iter() {
@@ -34,9 +49,17 @@ pub async fn compression_handle(window: tauri::Window, list: Vec<(usize, String)
             progress: 0,
             original_size: 0,
             size: 0,
+            err: None,
         })
     }
-    let mut optimization = Optimization::new(None, None, None, None, None, &mut worklist);
+    let mut optimization = Optimization::new(
+        Some(speed.try_into().unwrap()),
+        Some(quality_minimum.try_into().unwrap()),
+        Some(quality_target.try_into().unwrap()),
+        Some(dithering_level),
+        Some(compression),
+        &mut worklist,
+    );
     optimization.run_worklist(
         |work| {
             let progress = (work.progress as f32) / PROGRESS_CONSTANT * PROGRESS_COMPLETE;
@@ -46,11 +69,18 @@ pub async fn compression_handle(window: tauri::Window, list: Vec<(usize, String)
         },
         |work| {
             let progress = (work.progress as f32) / PROGRESS_CONSTANT * PROGRESS_COMPLETE;
+            println!("{:#?}", work);
             let status = match work.status {
                 WorkStatus::INIT => "INIT",
                 WorkStatus::WAIT => "WAIT",
                 WorkStatus::END => "END",
-                WorkStatus::UNHANDLED => "UNHANDLED",
+                WorkStatus::ERROR => {
+                    if let Some(err) = work.err {
+                        let err = err.to_string();
+                        window.emit("error", (work.id, err));
+                    }
+                    "ERROR"
+                }
             };
             window
                 .emit(

@@ -29,9 +29,9 @@ export interface WorkListType {
 
 export enum WorkStatus {
   INIT = "INIT",
+  ERROR = "ERROR",
   WAIT = "WAIT",
   END = "END",
-  UNHANDLED = "UNHANDLED",
 }
 
 export const WorkList = createContext<WorkListType[]>([]);

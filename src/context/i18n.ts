@@ -35,12 +35,6 @@ export interface I18N_TYPE {
        * 删除列表
        */
       clearWorkList: string;
-      work: {
-        /**
-         * 不支持的图像格式
-         */
-        unhandled: string;
-      };
     };
   };
   optionsArea: {
@@ -92,6 +86,23 @@ export interface I18N_TYPE {
       compressionTips: string;
     };
   };
+  /**
+   * 错误提示
+   */
+  error: {
+    /**
+     * 不能达到的最低质量
+     */
+    QualityTooLow: string;
+    /**
+     * 不支持的png颜色模式
+     */
+    Unsupported_Color_Mode: string;
+    /**
+     * 程序错误
+     */
+    ProgramError: string;
+  };
 }
 
 export const zhCN: I18N_TYPE = {
@@ -105,9 +116,6 @@ export const zhCN: I18N_TYPE = {
       compressedSize: "压缩后",
       reductionSize: "减少",
       clearWorkList: "删除列表",
-      work: {
-        unhandled: "不支持的图像格式",
-      },
     },
   },
   optionsArea: {
@@ -125,6 +133,11 @@ export const zhCN: I18N_TYPE = {
       compression: "压缩等级",
       compressionTips: "PNG编码器的压缩等级，默认是最小压缩",
     },
+  },
+  error: {
+    QualityTooLow: "无法达到所设置的最小质量，请减少优化质量的最小值",
+    Unsupported_Color_Mode: "不支持的png颜色模式",
+    ProgramError: "出错了！",
   },
 };
 

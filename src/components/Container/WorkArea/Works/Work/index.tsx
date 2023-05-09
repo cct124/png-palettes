@@ -3,7 +3,7 @@ import styles from "./index.module.scss";
 import Img, { ObjectFit } from "@src/components/UI/Img";
 import { ReactComponent as EmptyImg } from "@src/assets/icons/svg/empty_img.svg";
 import { ThemeStateContext } from "@src/context/theming";
-import { I18n } from "@src/context/i18n";
+import { I18N_TYPE, I18n } from "@src/context/i18n";
 import { ReactComponent as RightArrow } from "@src/assets/icons/svg/right_arrow.svg";
 import { WorkStatus } from "@src/context/workList";
 
@@ -46,14 +46,7 @@ export default function Work({ work }: { work: WorkListType }) {
       ""
     );
 
-  const progress =
-    work.status === WorkStatus.UNHANDLED ? (
-      <p className={classNames(styles.unhandled, "fs-10")}>
-        {i18n.workArea.works.work.unhandled}
-      </p>
-    ) : (
-      <p className={classNames(styles.progress, "fs-14")}>{work.progress}%</p>
-    );
+  const workInfo = createWorkInfo(work, i18n);
 
   return (
     <div
@@ -69,16 +62,43 @@ export default function Work({ work }: { work: WorkListType }) {
           {img}
         </div>
         <p
-          className={classNames(styles.path, "fs-14 z-1 text-overflow-hidden lh-20")}
+          className={classNames(
+            styles.path,
+            "fs-14 z-1 text-overflow-hidden lh-20"
+          )}
           title={work.path}
         >
           {work.path}
         </p>
       </div>
-      <div className={classNames(styles.right)}>{progress}</div>
+      <div className={classNames(styles.right)}>{workInfo}</div>
       <div className={classNames(styles.fileInfo, "fs-10")}>{fileInfo}</div>
     </div>
   );
+}
+
+function createWorkInfo(work: WorkListType, i18n: I18N_TYPE) {
+  if (work.status === WorkStatus.ERROR) {
+    let msg;
+    switch (work.err) {
+      case "QualityTooLow":
+        msg = i18n.error.QualityTooLow;
+        break;
+      case "Unsupported_Color_Mode":
+        msg = i18n.error.Unsupported_Color_Mode;
+        break;
+      default:
+        msg = i18n.error.ProgramError;
+        break;
+    }
+    console.log(msg);
+
+    return <p className={classNames(styles.error, "fs-10")}>{msg}</p>;
+  } else {
+    return (
+      <p className={classNames(styles.progress, "fs-14")}>{work.progress}%</p>
+    );
+  }
 }
 
 function formatFileSize(bytes: number) {

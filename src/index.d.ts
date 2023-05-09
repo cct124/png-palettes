@@ -45,4 +45,8 @@ interface WorkListType {
    * base64数据
    */
   base64: string;
+  /**
+   * 错误类型
+   */
+  err: string;
 }

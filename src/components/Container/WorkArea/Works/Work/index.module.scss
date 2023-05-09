@@ -23,7 +23,7 @@
   }
 
   .left {
-    width: 80%;
+    max-width: 80%;
   }
 
   .path {
@@ -52,13 +52,9 @@
       }
     }
 
-    &.UNHANDLED {
-      .preview {
-        filter: grayscale(1);
-      }
-
+    &.ERROR {
       .right {
-        .unhandled {
+        .error {
           color: var(--chakra-colors-red-550);
         }
       }
@@ -71,16 +67,6 @@
     &::before {
       background-color: var(--chakra-colors-orange-400);
     }
-    // &:nth-child(odd) {
-    //   &::before {
-    //     background-color: var(--chakra-colors-orange-400);
-    //   }
-    // }
-    // &:nth-child(even) {
-    //   &::before {
-    //     background-color: var(--chakra-colors-messenger-400);
-    //   }
-    // }
 
     .fileInfo {
       color: var(--chakra-colors-light-green-750);
@@ -110,29 +96,6 @@
 
     &::before {
       background-color: var(--chakra-colors-orange-600);
-    }
-
-    // &:nth-child(odd) {
-    //   &::before {
-    //     background-color: var(--chakra-colors-orange-600);
-    //   }
-    // }
-    // &:nth-child(even) {
-    //   &::before {
-    //     background-color: var(--chakra-colors-messenger-600);
-    //   }
-    // }
-
-    &.UNHANDLED {
-      .preview {
-        filter: grayscale(1);
-      }
-
-      .right {
-        .unhandled {
-          color: var(--chakra-colors-red-450);
-        }
-      }
     }
 
     .fileInfo {

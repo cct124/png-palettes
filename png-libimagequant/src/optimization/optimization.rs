@@ -1,8 +1,8 @@
 use super::Pngquant;
+use crate::error::Error;
 use crate::thread::ThreadPool;
-use crate::{BYTES_INTEGER, PROGRESS_COMPLETE, PROGRESS_CONSTANT, SECOND_CONSTANT};
+use crate::PROGRESS_CONSTANT;
 use png::Compression;
-use std::fs::DirEntry;
 use std::path::PathBuf;
 use std::sync::mpsc;
 use std::thread::available_parallelism;
@@ -82,70 +82,6 @@ impl<'a> Optimization<'a> {
         }
     }
 
-    /// 遍历工作路径下的所有目录文件
-    // fn visit_dirs(&self, dir: &Path, cb: &mut dyn FnMut(DirEntry)) -> io::Result<()> {
-    //     match dir.metadata() {
-    //         Ok(_) => {
-    //             for entry in fs::read_dir(dir)? {
-    //                 let entry = entry?;
-    //                 let path = entry.path();
-    //                 if path.is_dir() {
-    //                     self.visit_dirs(&path, cb)?;
-    //                 } else {
-    //                     cb(entry);
-    //                 }
-    //             }
-    //             Ok(())
-    //         }
-    //         Err(err) => Err(err),
-    //     }
-    // }
-
-    // /// 遍历目录查找png图片
-    // fn iterate_pngs(&self, entry: DirEntry, paths: &mut Vec<Work>) {
-    //     // 文件扩展名是否是png文件
-    //     if self.has_extension(&entry.path()) {
-    //         // 是png文件存入数组
-    //         paths.push(Work {
-    //             id: paths.len(),
-    //             path: entry,
-    //             status: WorkStatus::INIT,
-    //             progress: 0,
-    //             original_size: 0,
-    //             size: 0,
-    //         })
-    //     }
-    // }
-
-    // /// 检查文件扩展名以及需要排除的文件
-    // fn has_extension(&self, path: &Path) -> bool {
-    //     if let Some(exclude) = &self.exclude {
-    //         let file_name = path.file_name().unwrap().to_str().unwrap();
-    //         if exclude.iter().any(|f| f == file_name) {
-    //             return false;
-    //         };
-    //     }
-
-    //     if let Some(ref extension) = path.extension().and_then(OsStr::to_str) {
-    //         return self
-    //             .extension
-    //             .iter()
-    //             .any(|x| x.eq_ignore_ascii_case(extension));
-    //     }
-
-    //     false
-    // }
-
-    /// 生成工作列表
-    // fn generate_worklist(&mut self) {
-    //     // 输出工作路径
-    //     // println!("work Path: {}", self.path.to_str().unwrap().green());
-    //     // let mut paths: Vec<Work> = vec![];
-    //     // self.visit_dirs(self.path, &mut |entry| self.iterate_pngs(entry, &mut paths))
-    //     //     .unwrap();
-    //     // self.worklist = paths;
-    // }
-
     /// 执行数组中的工作任务
     pub fn run_worklist<F1, F2>(&mut self, progress_change: F1, status_change: F2)
     where
@@ -177,7 +113,18 @@ impl<'a> Optimization<'a> {
                     let id = work.id;
                     // 多线程执行工作任务
                     self.thread_pool.execute(move || {
-                        if let Ok(pngquant) = Pngquant::new(
+                        // let pngquant = Pngquant::new(
+                        //     id,
+                        //     &path,
+                        //     speed,
+                        //     quality_minimum,
+                        //     quality_target,
+                        //     dithering_level,
+                        //     progress_sender,
+                        // )
+                        // .as_mut();
+
+                        match Pngquant::new(
                             id,
                             &path,
                             speed,
@@ -188,36 +135,57 @@ impl<'a> Optimization<'a> {
                         )
                         .as_mut()
                         {
-                            // 执行编码覆盖原文件
-                            pngquant.encoder(
-                                pngquant.path,
-                                speed,
-                                quality_minimum,
-                                quality_target,
-                                compression,
-                            );
-                            let original_size = pngquant.original_size.unwrap();
-                            let size = pngquant.size.unwrap();
-                            // 向主线程发送当前工作结束消息
-                            status_sender
-                                .send(Status {
-                                    id,
-                                    status: WorkStatus::END,
-                                    progress: PROGRESS_CONSTANT,
-                                    original_size,
-                                    size,
-                                })
-                                .unwrap();
-                        } else {
-                            status_sender
-                                .send(Status {
-                                    id,
-                                    status: WorkStatus::UNHANDLED,
-                                    progress: 0.0,
-                                    original_size: 0,
-                                    size: 0,
-                                })
-                                .unwrap();
+                            Ok(pngquant) => {
+                                // 执行编码覆盖原文件
+                                let res = pngquant.encoder(
+                                    pngquant.path,
+                                    speed,
+                                    quality_minimum,
+                                    quality_target,
+                                    compression,
+                                );
+                                match res {
+                                    Ok(()) => {
+                                        let original_size = pngquant.original_size.unwrap();
+                                        let size = pngquant.size.unwrap();
+                                        // 向主线程发送当前工作结束消息
+                                        status_sender
+                                            .send(Status {
+                                                id,
+                                                status: WorkStatus::END,
+                                                progress: PROGRESS_CONSTANT,
+                                                original_size,
+                                                size,
+                                                err: None,
+                                            })
+                                            .unwrap();
+                                    }
+                                    Err(err) => {
+                                        status_sender
+                                            .send(Status {
+                                                id,
+                                                status: WorkStatus::ERROR,
+                                                progress: PROGRESS_CONSTANT,
+                                                original_size: 0,
+                                                size: 0,
+                                                err: Some(err),
+                                            })
+                                            .unwrap();
+                                    }
+                                }
+                            }
+                            Err(err) => {
+                                status_sender
+                                    .send(Status {
+                                        id,
+                                        status: WorkStatus::ERROR,
+                                        progress: 0.0,
+                                        original_size: 0,
+                                        size: 0,
+                                        err: Some(*err),
+                                    })
+                                    .unwrap();
+                            }
                         }
                     })
                 }
@@ -236,9 +204,11 @@ impl<'a> Optimization<'a> {
                             work.size = message.size;
                             self.process_file_num += 1;
                         }
-                        WorkStatus::UNHANDLED => {
-                            // 将工作任务状态改为已结束
-                            work.status = WorkStatus::UNHANDLED;
+                        WorkStatus::ERROR => {
+                            work.status = WorkStatus::ERROR;
+                            if let Some(err) = message.err {
+                                work.err = Some(err)
+                            }
                         }
                         _ => {}
                     }
@@ -258,88 +228,11 @@ impl<'a> Optimization<'a> {
 
             // 判断是否所有任务已完成
             if self.worklist.len() == self.end_num {
-                // self.update_progress_bar(progress_total, &pbstr, &pbwid);
-                // print!("\n");
-
-                // println!(
-                //     "process the file: {}",
-                //     self.process_file_num.to_string().green()
-                // );
-
-                // self.size_change_line();
-
-                // self.total_time_line();
-
-                // println!("complete all work!");
                 // 退出循环
                 break;
             }
         }
     }
-
-    // /// 更新进度条
-    // fn update_progress_bar(&self, progress_total: f64, pbstr: &String, pbwid: &String) {
-    //     let current_value = self
-    //         .worklist
-    //         .iter()
-    //         .map(move |f| f.progress)
-    //         .fold(0, |acc, x| acc + x) as f64;
-    //     let perc = current_value / progress_total;
-    //     let lpad = (perc * 20.00).floor();
-    //     // let pbstr = &pbstr[0..'\u{25A0}'.len_utf8() * (lpad.trunc() as usize)].green();
-    //     // let pbwid = &pbwid[0..((20.0 - lpad).trunc() as usize)].green();
-    //     // let perc = (perc * 100.0).trunc().to_string().add("%").green();
-    //     // print!("\rprocessing data: {}{} {}", pbstr, pbwid, perc);
-    //     io::stdout().flush().unwrap();
-    // }
-
-    // /// 输出文件大小变化
-    // fn size_change_line(&self) {
-    //     // 压缩前总大小
-    //     let total_original_size = ((self
-    //         .worklist
-    //         .iter()
-    //         .map(move |f| f.original_size)
-    //         .fold(0, |acc, x| acc + x) as f64)
-    //         / BYTES_INTEGER)
-    //         .round();
-    //     // 压缩后总大小
-    //     let total_size = ((self
-    //         .worklist
-    //         .iter()
-    //         .map(move |f| f.size)
-    //         .fold(0, |acc, x| acc + x) as f64)
-    //         / BYTES_INTEGER)
-    //         .round();
-    //     // 总减少大小
-    //     let decrease_size = 100 - ((total_size / total_original_size) * 100.00) as usize;
-    //     let decrease_size = decrease_size.to_string().add("%");
-    //     // let change = format!("{}KB -> {}KB", total_original_size, total_size).green();
-    //     // println!(
-    //     //     "total file size change: {}\ntotal decrease: {}",
-    //     //     change,
-    //     //     decrease_size.green()
-    //     // );
-    // }
-
-    // fn total_time_line(&self) {
-    //     // 获取当前时间
-    //     let current_time = SystemTime::now()
-    //         .duration_since(UNIX_EPOCH)
-    //         .unwrap()
-    //         .as_millis();
-    //     // 总耗时
-    //     let second: f64 = ((current_time - self.start_time) as f64).div(SECOND_CONSTANT);
-    //     let second = second.to_string().add("s");
-
-    //     // println!("total time: {}", second.green());
-    // }
-
-    // /// 优化图片
-    // pub fn quality(&mut self) {
-    //     // self.generate_worklist();
-    //     self.run_worklist();
-    // }
 }
 
 #[derive(Debug)]
@@ -356,6 +249,7 @@ pub struct Work {
     pub original_size: u64,
     /// 压缩文件大小
     pub size: u64,
+    pub err: Option<Error>,
 }
 
 /// 工作任务状态
@@ -363,12 +257,12 @@ pub struct Work {
 pub enum WorkStatus {
     /// 初始化
     INIT,
+    /// 错误
+    ERROR,
     /// 结束
     END,
     /// 正在执行
     WAIT,
-    /// 未处理，不支持的png格式
-    UNHANDLED,
 }
 
 #[derive(Debug)]
@@ -383,4 +277,6 @@ pub struct Status {
     pub progress: f32,
     /// 压缩文件大小
     pub size: u64,
+    /// 错误类型
+    pub err: Option<Error>,
 }

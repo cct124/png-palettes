@@ -31,7 +31,7 @@ export default function Works({
   );
 
   const complete = useCallback(() => {
-    const list = workList.filter((w) => w.status !== WorkStatus.UNHANDLED);
+    const list = workList.filter((w) => w.status !== WorkStatus.ERROR);
     return list.length === 0 || list.every((w) => w.status === WorkStatus.END);
   }, [workList]);
 

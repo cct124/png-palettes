@@ -22,6 +22,7 @@ tauri = {version = "1.2.4", features = ["dialog-open", "dialog-save", "fs-read-f
 window-shadows = "0.2.1"
 base64 = "0.21.0"
 mime = "0.3.17"
+png = "0.17.6"
 
 [features]
 # by default Tauri runs in production mode

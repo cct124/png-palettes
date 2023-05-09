@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useContext } from "react";
 import styles from "./index.module.scss";
 import { invoke } from "@tauri-apps/api/tauri";
 import DropContainer from "./DropContainer";
 import * as dialog from "@tauri-apps/api/dialog";
 import { listen, UnlistenFn } from "@tauri-apps/api/event";
 import Works from "./Works";
+import { CompressionOptions } from "@src/context/options";
 
 let works: WorkListType[] = [];
 
@@ -15,10 +16,13 @@ let works: WorkListType[] = [];
 export default function WorkArea() {
   const [workList, setWorkList] = useState<WorkListType[]>([]);
 
+  const [options] = useContext(CompressionOptions);
+
   useEffect(() => {
     let filesInfoUnlistenFn: UnlistenFn;
     let progressUnlistenFn: UnlistenFn;
     let statusUnlistenFn: UnlistenFn;
+    let errorUnlistenFn: UnlistenFn;
 
     listen(
       "files-info",
@@ -62,10 +66,21 @@ export default function WorkArea() {
       }
     ).then((_unlistenFn) => (statusUnlistenFn = _unlistenFn));
 
+    listen("error", ({ payload }: { payload: [number, string] }) => {
+      const list = [...works];
+      const [id, err] = payload;
+      const li = list.find((w) => w.id === id);
+      if (li) {
+        li.err = err;
+      }
+      setWorkList(list);
+    }).then((_unlistenFn) => (errorUnlistenFn = _unlistenFn));
+
     return () => {
       if (filesInfoUnlistenFn) filesInfoUnlistenFn();
       if (progressUnlistenFn) progressUnlistenFn();
       if (statusUnlistenFn) statusUnlistenFn();
+      if (errorUnlistenFn) errorUnlistenFn();
     };
   }, []);
 
@@ -81,21 +96,30 @@ export default function WorkArea() {
         ],
       })
       .then((selected: unknown) => {
-        for (const [id, path] of (selected as string[]).entries()) {
-          works.push({
-            id,
-            fileName: "",
-            path,
-            status: "INIT",
-            progress: 0,
-            originalSize: 0,
-            size: 0,
-            base64: "",
-          });
+        if (selected) {
+          for (const [id, path] of (selected as string[]).entries()) {
+            works.push({
+              id,
+              fileName: "",
+              path,
+              status: "INIT",
+              progress: 0,
+              originalSize: 0,
+              size: 0,
+              base64: "",
+              err: "",
+            });
+          }
+
+          invoke("compression_handle", {
+            list: (selected as string[]).map((path, id) => [id, path]),
+            speed: options.speed,
+            qualityMinimum: options.qualityMinimum,
+            qualityTarget: options.qualityTarget,
+            ditheringLevel: options.ditheringLevel,
+            compression: options.compression,
+          }).then(() => console.log("Completed!"));
         }
-        invoke("compression_handle", {
-          list: (selected as string[]).map((path, id) => [id, path]),
-        }).then(() => console.log("Completed!"));
       });
   }
 
