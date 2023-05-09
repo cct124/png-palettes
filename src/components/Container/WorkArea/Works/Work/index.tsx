@@ -91,7 +91,6 @@ function createWorkInfo(work: WorkListType, i18n: I18N_TYPE) {
         msg = i18n.error.ProgramError;
         break;
     }
-    console.log(msg);
 
     return <p className={classNames(styles.error, "fs-10")}>{msg}</p>;
   } else {

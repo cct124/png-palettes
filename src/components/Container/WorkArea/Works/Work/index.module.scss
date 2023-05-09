@@ -1,7 +1,7 @@
 .work {
   $h: 60px;
   $ptb: 3px;
-  padding: $ptb 20px $ptb 0;
+  padding: $ptb 5px $ptb 0;
   height: $h;
   margin: 0 0 5px;
 
@@ -54,6 +54,7 @@
 
     &.ERROR {
       .right {
+        margin-left: 5px;
         .error {
           color: var(--chakra-colors-red-550);
         }
@@ -91,6 +92,15 @@
     &.END {
       &::before {
         background-color: var(--chakra-colors-messenger-400);
+      }
+    }
+
+    &.ERROR {
+      .right {
+        margin-left: 5px;
+        .error {
+          color: var(--chakra-colors-red-550);
+        }
       }
     }
 

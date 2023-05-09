@@ -131,7 +131,8 @@ export const zhCN: I18N_TYPE = {
       ditheringLevel: "平滑参数",
       ditheringLevelTips: "设置为1.0以获得平滑的图像",
       compression: "压缩等级",
-      compressionTips: "PNG编码器的压缩等级，默认是最小压缩",
+      compressionTips:
+        "PNG编码器的压缩等级，default、fast、best。\r\nbest是最好的压缩但时间会更长",
     },
   },
   error: {

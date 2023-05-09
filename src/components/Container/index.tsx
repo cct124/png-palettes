@@ -19,7 +19,7 @@ export default function Container() {
     speed: 4,
     qualityMinimum: 0,
     qualityTarget: 100,
-    compression: Compression.Fast,
+    compression: Compression.Best,
     ditheringLevel: 1.0,
   });
 

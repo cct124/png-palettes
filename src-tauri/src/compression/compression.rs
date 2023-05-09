@@ -20,7 +20,7 @@ pub async fn compression_handle(
     dithering_level: f32,
     compression: String,
 ) {
-    println!("Window: {} \r\nList: {:#?} ", window.label(), list,);
+    // println!("Window: {} \r\nList: {:#?} ", window.label(), list,);
     let compression = compression.as_str();
     let compression = match compression {
         "Best" => Compression::Best,
@@ -69,7 +69,7 @@ pub async fn compression_handle(
         },
         |work| {
             let progress = (work.progress as f32) / PROGRESS_CONSTANT * PROGRESS_COMPLETE;
-            println!("{:#?}", work);
+            // println!("{:#?}", work);
             let status = match work.status {
                 WorkStatus::INIT => "INIT",
                 WorkStatus::WAIT => "WAIT",

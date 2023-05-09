@@ -22,8 +22,9 @@ export default function Options() {
   }
 
   function setQualityMinimum(value: number) {
-    console.log(value);
-
+    if (typeof value === "number") {
+      value = Math.ceil(value);
+    }
     setCompressionOptions({
       ...compressionOptions,
       qualityMinimum: value,
@@ -31,6 +32,9 @@ export default function Options() {
   }
 
   function setQualityTarget(value: number) {
+    if (typeof value === "number") {
+      value = Math.ceil(value);
+    }
     setCompressionOptions({
       ...compressionOptions,
       qualityTarget: value,
@@ -128,7 +132,7 @@ export default function Options() {
               type="number"
               setValue={setQualityMinimum}
               min={0}
-              max={100}
+              max={compressionOptions.qualityTarget}
             ></Input>
           </div>
           <div className="flex-center">
