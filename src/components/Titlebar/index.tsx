@@ -16,6 +16,7 @@ const appName = await getName();
  */
 export default function Container() {
   const [theme] = useContext(ThemeStateContext);
+
   /**
    * 按钮
    */
@@ -49,7 +50,12 @@ export default function Container() {
   return (
     <div
       data-tauri-drag-region
-      className={classNames(styles.titlebar, styles[theme], "flex-jcsb-aic", "pad-l-5")}
+      className={classNames(
+        styles.titlebar,
+        styles[theme],
+        "flex-jcsb-aic",
+        "pad-l-5"
+      )}
     >
       <div
         data-tauri-drag-region
