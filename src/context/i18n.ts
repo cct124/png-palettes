@@ -85,6 +85,12 @@ export interface I18N_TYPE {
        */
       compressionTips: string;
     };
+    UIControl: {
+      /**
+       * 关于
+       */
+      about: string;
+    };
   };
   /**
    * 错误提示
@@ -133,6 +139,9 @@ export const zhCN: I18N_TYPE = {
       compression: "压缩等级",
       compressionTips:
         "PNG编码器的压缩等级，default、fast、best。\r\nbest是最好的压缩但时间会更长",
+    },
+    UIControl: {
+      about: "关于",
     },
   },
   error: {

@@ -26,10 +26,14 @@
       "fs": {
         "readFile": true
       },
+      "shell": {
+        "open": true
+      },
       "dialog": {
         "all": false,
         "open": true,
-        "save": true
+        "save": true,
+        "message": true
       }
     },
     "bundle": {
