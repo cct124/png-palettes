@@ -13,6 +13,8 @@ import I18n from "@src/components/I18n";
  */
 window.classNames = classNames;
 
+document.addEventListener("contextmenu", (event) => event.preventDefault());
+
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
     <Theming>

@@ -7,7 +7,7 @@
   },
   "package": {
     "productName": "Png Palettes",
-    "version": "0.1.0"
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -34,8 +34,9 @@
     },
     "bundle": {
       "active": true,
-      "category": "DeveloperTool",
-      "copyright": "",
+      "category": "Productivity",
+      "copyright": "GNU GENERAL PUBLIC LICENSE",
+      "publisher": "huangdonghao1997@gmail.com",
       "deb": {
         "depends": []
       },
@@ -47,8 +48,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
-      "longDescription": "",
+      "identifier": "PngPalettes2023",
+      "longDescription": "这是一个PNG图片压缩工具，选择所要压缩的图片时，软件将PNG图像的RGBA模式转为调色板模式，从而减小图像大小",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
