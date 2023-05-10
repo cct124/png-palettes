@@ -1,0 +1,138 @@
+.work {
+  $h: 60px;
+  $ptb: 3px;
+  padding: $ptb 5px $ptb 0;
+  height: $h;
+  margin: 0 0 5px;
+
+  .preview {
+    $is: $h - $ptb * 2;
+    width: $h;
+    height: $h;
+
+    img {
+      padding: 5px;
+      width: $is;
+      height: $is;
+    }
+
+    svg {
+      width: $h - 20px;
+      height: $h - 20px;
+    }
+  }
+
+  .left {
+    max-width: 80%;
+  }
+
+  .path {
+    letter-spacing: 0.5px;
+  }
+
+  &::before {
+    content: " ";
+    width: 2px;
+    height: $h;
+    position: absolute;
+    z-index: 1;
+  }
+
+  &.light {
+    transition: all 0.3s;
+    box-shadow: 1px 1px 2px 1px rgba(29, 28, 31, 0.07);
+
+    &.END {
+      .path {
+        color: var(--chakra-colors-messenger-550);
+      }
+
+      &::before {
+        background-color: var(--chakra-colors-messenger-400);
+      }
+    }
+
+    &.ERROR {
+      .right {
+        margin-left: 5px;
+        .error {
+          color: var(--chakra-colors-red-550);
+        }
+      }
+    }
+
+    &:hover {
+      box-shadow: 1px 1px 2px 1px rgba(29, 28, 31, 0.15);
+    }
+
+    &::before {
+      background-color: var(--chakra-colors-orange-400);
+    }
+
+    .fileInfo {
+      color: var(--chakra-colors-light-green-750);
+      .rightArrow,
+      .downArrow {
+        fill: var(--chakra-colors-light-green-750);
+      }
+    }
+
+    .progress {
+      color: var(--chakra-colors-messenger-550);
+    }
+  }
+  &.dark {
+    background-color: rgba(137, 148, 167, 0.1);
+    box-shadow: 1px 1px 2px 1px rgba(29, 28, 31, 0.07);
+
+    &:hover {
+      box-shadow: 1px 1px 2px 1px rgba(29, 28, 31, 0.4);
+    }
+
+    &.END {
+      &::before {
+        background-color: var(--chakra-colors-messenger-400);
+      }
+    }
+
+    &.ERROR {
+      .right {
+        margin-left: 5px;
+        .error {
+          color: var(--chakra-colors-red-550);
+        }
+      }
+    }
+
+    &::before {
+      background-color: var(--chakra-colors-orange-600);
+    }
+
+    .fileInfo {
+      color: var(--chakra-colors-light-green-300);
+      .rightArrow,
+      .downArrow {
+        fill: var(--chakra-colors-light-green-300);
+      }
+    }
+
+    .progress {
+      color: var(--chakra-colors-messenger-550);
+    }
+  }
+
+  .fileInfo {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    .rightArrow {
+      width: 18px;
+      height: 10px;
+    }
+    .downArrow {
+      width: 15px;
+      height: 10px;
+      transform: rotate(90deg);
+    }
+  }
+}

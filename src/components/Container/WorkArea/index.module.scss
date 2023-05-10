@@ -1,0 +1,4 @@
+.workArea {
+    width: calc(100vw - $optionsAreaWidth);
+    background-color: var(--work-area-bg-color);
+}

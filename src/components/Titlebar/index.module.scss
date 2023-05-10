@@ -1,0 +1,76 @@
+.titlebar {
+  $h: $titlebarHeight;
+  height: $h;
+  user-select: none;
+  &.light {
+    background: var(--chakra-colors-green-100);
+    border-bottom: 1px solid var(--chakra-colors-green-250);
+  }
+  &.dark {
+    border-bottom: 1px solid var(--chakra-colors-green-950);
+  }
+
+  .left {
+    h1 {
+      font-weight: normal;
+      color: var(--titlebar-application-name-color);
+    }
+
+    img {
+      $s: 18px;
+      width: $s;
+      height: $s;
+    }
+  }
+
+  .middle {
+  }
+
+  .right {
+    height: $h;
+
+    .icon {
+      $w: 40px;
+      $s: 12px;
+      width: $w;
+      height: calc($h - 5px);
+      transition: all 0.3s;
+
+      &.light {
+        &:hover {
+          background-color: #d0d2d5;
+          svg {
+            fill: var(--titlebar-btn-fill-hover);
+          }
+          &[data-name="SvgClose"] {
+            background-color: var(--chakra-colors-red-650);
+            svg {
+              fill: var(--chakra-colors-white);
+            }
+          }
+        }
+      }
+      &.dark {
+        fill: var(--chakra-colors-white);
+        &:hover {
+          background-color: var(--chakra-colors-gray-850);
+          svg {
+            fill: var(--titlebar-btn-fill-hover);
+          }
+          &[data-name="SvgClose"] {
+            background-color: var(--chakra-colors-red-750);
+            svg {
+              fill: var(--chakra-colors-white);
+            }
+          }
+        }
+      }
+
+      svg {
+        width: $s;
+        height: $s;
+        // transform: scale(-0.32);
+      }
+    }
+  }
+}

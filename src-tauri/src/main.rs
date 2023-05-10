@@ -2,21 +2,20 @@
     all(not(debug_assertions), target_os = "windows"),
     windows_subsystem = "windows"
 )]
-use png_libimagequant;
 
-#[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}!", name)
-}
-
-#[tauri::command]
-fn add(l: usize, r: usize) -> usize {
-    png_libimagequant::add(l, r)
-}
+mod compression;
+use compression::compression_handle;
+use tauri::Manager;
+use window_shadows::set_shadow;
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![greet, add])
+        .setup(|app| {
+            let window = app.get_window("main").unwrap();
+            set_shadow(&window, true).expect("Unsupported platform!");
+            Ok(())
+        })
+        .invoke_handler(tauri::generate_handler![compression_handle])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

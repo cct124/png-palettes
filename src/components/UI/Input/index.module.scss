@@ -1,0 +1,42 @@
+.default {
+  $w: 150px;
+  $h: 20px;
+  width: $w;
+  height: $h;
+  font-size: 12px;
+  line-height: $h;
+  padding-left: 5px;
+}
+
+.input {
+  outline: none;
+  border: initial;
+  border-radius: 3px;
+}
+
+.light {
+  background-color: white;
+  border: 1px solid var(--chakra-colors-gray-250);
+
+  &:hover {
+    border: 1px solid var(--chakra-colors-gray-300);
+  }
+
+  &:focus {
+    border: 1px solid var(--chakra-colors-messenger-550);
+  }
+}
+
+.dark {
+  background-color: var(--chakra-colors-gray-850);
+  border: 1px solid var(--chakra-colors-gray-750);
+  color: var(--chakra-colors-gray-100);
+
+  &:hover {
+    border: 1px solid var(--chakra-colors-gray-650);
+  }
+
+  &:focus {
+    border: 1px solid var(--chakra-colors-gray-600);
+  }
+}

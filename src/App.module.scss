@@ -1,7 +1,11 @@
-/* example.module.css */
-.add {
-  width: 200px;
-  input {
-    width: 100px;
+/* App.module.css */
+.app {
+  &.light {
+    color: var(--chakra-colors-gray-900);
+  }
+
+  &.dark {
+    color: var(--chakra-colors-gray-50);
+    background-color: var(--chakra-colors-gray-900);
   }
 }

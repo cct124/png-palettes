@@ -6,17 +6,41 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "png-palettes",
-    "version": "0.1.0"
+    "productName": "Png Palettes",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
-      "all": false
+      "all": false,
+      "window": {
+        "all": false,
+        "close": true,
+        "hide": true,
+        "show": true,
+        "maximize": true,
+        "minimize": true,
+        "unmaximize": true,
+        "unminimize": true,
+        "startDragging": true
+      },
+      "fs": {
+        "readFile": true
+      },
+      "shell": {
+        "open": true
+      },
+      "dialog": {
+        "all": false,
+        "open": true,
+        "save": true,
+        "message": true
+      }
     },
     "bundle": {
       "active": true,
-      "category": "DeveloperTool",
-      "copyright": "",
+      "category": "Productivity",
+      "copyright": "GNU GENERAL PUBLIC LICENSE",
+      "publisher": "huangdonghao1997@gmail.com",
       "deb": {
         "depends": []
       },
@@ -28,8 +52,8 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
-      "longDescription": "",
+      "identifier": "PngPalettes2023",
+      "longDescription": "这是一个PNG图片压缩工具，选择所要压缩的图片时，软件将PNG图像的RGBA模式转为调色板模式，从而减小图像大小",
       "macOS": {
         "entitlements": null,
         "exceptionDomain": "",
@@ -58,7 +82,11 @@
         "height": 600,
         "resizable": true,
         "title": "Png Palettes",
-        "width": 800
+        "width": 800,
+        "minWidth": 800,
+        "minHeight": 600,
+        "fileDropEnabled": true,
+        "decorations": false
       }
     ]
   }

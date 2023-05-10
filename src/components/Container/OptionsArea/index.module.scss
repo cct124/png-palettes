@@ -1,0 +1,11 @@
+.optionsArea {
+  width: $optionsAreaWidth;
+  
+  &.light {
+    background-color: var(--chakra-colors-green-100);
+    box-shadow: -1px 0px 3px rgb(0 0 0 / 12%);
+  }
+  &.dark {
+    background-color: var(--chakra-colors-gray-900);
+  }
+}

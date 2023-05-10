@@ -1,0 +1,32 @@
+.UIControl {
+  height: 30px;
+  .about {
+    cursor: pointer;
+    &:hover {
+      color: var(--chakra-colors-messenger-600);
+    }
+  }
+
+  .github {
+    cursor: pointer;
+    svg {
+      $s: 14px;
+      width: $s;
+      height: $s;
+    }
+    &.light {
+      svg {
+        path {
+          fill: var(--chakra-colors-gray-900);
+        }
+      }
+    }
+    &.dark {
+      svg {
+        path {
+          fill: var(--chakra-colors-gray-100);
+        }
+      }
+    }
+  }
+}

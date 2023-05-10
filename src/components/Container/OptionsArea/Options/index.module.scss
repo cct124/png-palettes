@@ -1,0 +1,41 @@
+.options {
+  .item {
+    .label {
+      font-size: 13px;
+      letter-spacing: 1px;
+      
+      .question {
+        $s: 12px;
+        width: $s;
+        height: $s;
+        svg {
+          cursor: pointer;
+          width: $s;
+          height: $s;
+        }
+      }
+
+      &.light {
+        svg {
+          path {
+            fill: var(--chakra-colors-gray-900);
+          }
+        }
+      }
+
+      &.dark {
+        svg {
+          path {
+            fill: white;
+          }
+        }
+      }
+    }
+  }
+
+  .quality {
+    .input {
+      width: 50px;
+    }
+  }
+}
