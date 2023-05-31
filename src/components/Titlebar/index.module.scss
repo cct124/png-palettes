@@ -11,6 +11,11 @@
   }
 
   .left {
+    .logo {
+      $s: 14px;
+      width: $s;
+      height: $s;
+    }
     h1 {
       font-weight: normal;
       color: var(--titlebar-application-name-color);

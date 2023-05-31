@@ -4,8 +4,8 @@ import { getName } from "@tauri-apps/api/app";
 import styles from "./index.module.scss";
 import { ReactComponent as CloseSvg } from "@src/assets/icons/svg/close.svg"; // 关闭图标
 import { ReactComponent as MinimizeSvg } from "@src/assets/icons/svg/minimize.svg"; // 最小化图标
+import { ReactComponent as LogoSvg } from "@src/assets/icons/svg/logo.svg"; // 最小化图标
 import WindowSizeControl from "./windowSizeControl";
-import logoSrc from "@assets/icons/img/logo.png";
 import { ThemeStateContext, THEMING_TYPE } from "@src/context/theming";
 
 const appName = await getName();
@@ -61,7 +61,12 @@ export default function Container() {
         data-tauri-drag-region
         className={classNames(styles.left, "flex-jcfs-aic")}
       >
-        <img data-tauri-drag-region className="mar-r-5" src={logoSrc} alt="" />
+        <div
+          data-tauri-drag-region
+          className={classNames(styles.logo, "mar-r-5")}
+        >
+          <LogoSvg></LogoSvg>
+        </div>
         <h1 data-tauri-drag-region className="fs-13">
           {appName}
         </h1>
