@@ -8,9 +8,10 @@
   }
 
   .github {
+    $s: 14px;
+    height: $s;
     cursor: pointer;
     svg {
-      $s: 14px;
       width: $s;
       height: $s;
     }
