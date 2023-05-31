@@ -7,11 +7,14 @@ import "./styles/index.scss";
 import { classNames } from "./utils/tools";
 import Theming from "@src/components/Theming";
 import I18n from "@src/components/I18n";
+import { localProxy } from "./plugin/local";
 
 /**
  * css 类名处理全局注入
  */
 window.classNames = classNames;
+
+window.$local = localProxy();
 
 document.addEventListener("contextmenu", (event) => event.preventDefault());
 

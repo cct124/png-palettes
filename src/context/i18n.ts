@@ -1,5 +1,11 @@
 import { createContext } from "react";
 
+export interface LanguageType {
+  id: number;
+  name: string;
+  data: I18N_TYPE;
+}
+
 export interface I18N_TYPE {
   workArea: {
     /**
@@ -94,6 +100,19 @@ export interface I18N_TYPE {
        * 关于
        */
       about: string;
+      /**
+       * 语言
+       */
+      language: string;
+    };
+  };
+  /**
+   * 弹窗
+   */
+  dialog: {
+    about: {
+      title: string;
+      content: string;
     };
   };
   /**
@@ -147,6 +166,14 @@ export const zhCN: I18N_TYPE = {
     },
     UIControl: {
       about: "关于",
+      language: "语言",
+    },
+  },
+  dialog: {
+    about: {
+      title: "关于",
+      content:
+        "这是一个PNG图片压缩工具，选择所要压缩的图片时，软件将PNG图像的RGBA模式转为调色板模式，从而减小图像大小。\r\n如有别的问题请联系：huangdonghao1997@gmail.com",
     },
   },
   error: {
@@ -156,6 +183,72 @@ export const zhCN: I18N_TYPE = {
   },
 };
 
+export const en: I18N_TYPE = {
+  workArea: {
+    dropContainer: {
+      openFile: "Select file",
+      openDir: "Select directory",
+    },
+    works: {
+      filesNum: "Number of files",
+      originalSize: "source file",
+      compressedSize: "after compression",
+      reductionSize: "reduce",
+      clearWorkList: "Delete list",
+    },
+  },
+  optionsArea: {
+    options: {
+      speed: "Speed",
+      speedTips:
+        "1-10, generates lower quality images at a faster speed,\r\nwhich may be useful for real-time image generation. The default value is 4.",
+      quality: "Quality",
+      qualityTips:
+        "The range is 0-100, similar to JPEG. If the minimum quality cannot be met,\r\nquantization will be aborted due to an error. The default value is the minimum of 0 and the maximum of 100,\r\nwhich means to do the best possible and never abort the process. If the maximum value is less than 100,\r\nthe library will attempt to use fewer colors. Due to increased dithering,\r\nimages with fewer colors are not always smaller.",
+      qualityMinimum: "Min value",
+      qualityTarget: "Target value",
+      ditheringLevel: "Smoothing parameter",
+      ditheringLevelTips: "Set to 1.0 to obtain a smooth image",
+      compression: "Compression level",
+      compressionTips:
+        "PNG encoder's compression level, default, fast, best. Best is the best compression but takes longer.",
+    },
+    UIControl: {
+      about: "About",
+      language: "Language",
+    },
+  },
+  dialog: {
+    about: {
+      title: "About",
+      content:
+        "This is a PNG image compression tool. When selecting the image to be compressed,\r\nthe software converts the PNG image's RGBA mode to a palette mode, thereby reducing the image size. \r\nIf you have any other questions, please contact: huangdonghao1997@gmail.com",
+    },
+  },
+  error: {
+    QualityTooLow:
+      "Unable to achieve the set minimum quality, please reduce the minimum value of the optimized quality",
+    Unsupported_Color_Mode: "Unsupported PNG color mode",
+    ProgramError: "An error occurred!",
+  },
+};
+
 export const I18n = createContext<
   [I18N_TYPE, React.Dispatch<React.SetStateAction<I18N_TYPE>>]
 >(null as any);
+
+/**
+ * 支持的语言
+ */
+export const languages: LanguageType[] = [
+  {
+    id: 0,
+    name: "中文简体",
+    data: zhCN,
+  },
+  {
+    id: 1,
+    name: "English",
+    data: en,
+  },
+];

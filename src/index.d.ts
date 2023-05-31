@@ -10,6 +10,7 @@ interface Window {
    * @returns
    */
   classNames: classNames;
+  $local: { [key: string]: any };
 }
 
 interface WorkListType {
