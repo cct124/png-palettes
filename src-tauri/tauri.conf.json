@@ -34,6 +34,9 @@
         "open": true,
         "save": true,
         "message": true
+      },
+      "path": {
+        "all": true
       }
     },
     "bundle": {

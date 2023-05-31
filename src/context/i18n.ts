@@ -10,6 +10,10 @@ export interface I18N_TYPE {
        * 选择文件
        */
       openFile: string;
+      /**
+       * 选择目录
+       */
+      openDir: string;
     };
     /**
      * 工作列表
@@ -115,6 +119,7 @@ export const zhCN: I18N_TYPE = {
   workArea: {
     dropContainer: {
       openFile: "选择文件",
+      openDir: "选择目录",
     },
     works: {
       filesNum: "文件数量",

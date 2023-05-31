@@ -5,8 +5,10 @@ import { I18n } from "@src/context/i18n";
 
 export default function DropContainer({
   onOpenFile,
+  onOpenDir,
 }: {
   onOpenFile: () => void;
+  onOpenDir: () => void;
 }) {
   const [i18n] = useContext(I18n);
   const drop = useRef<HTMLDivElement>(null);
@@ -53,6 +55,12 @@ export default function DropContainer({
         "h-100p"
       )}
     >
+      <Button
+        className={classNames(styles.openFile, "fs-14 mar-r-10")}
+        onClick={onOpenDir}
+      >
+        {i18n.workArea.dropContainer.openDir}
+      </Button>
       <Button
         className={classNames(styles.openFile, "fs-14")}
         onClick={onOpenFile}
