@@ -1,5 +1,22 @@
 .dropContainer {
-  .openFile {
-    line-height: 1.8;
+  .container {
+    width: 95%;
+    height: 95%;
+    border-radius: 8px;
+    border-width: 1px;
+    border-style: dashed;
+    &.light {
+      border-color: var(--chakra-colors-gray-500);
+      background-color: var(--chakra-colors-green-50);
+    }
+    &.dark {
+      border-color: var(--chakra-colors-gray-600);
+    }
+    .openFile {
+      line-height: 1.8;
+    }
+    .tips1 {
+      color: var(--chakra-colors-gray-600);
+    }
   }
 }

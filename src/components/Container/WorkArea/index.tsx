@@ -6,7 +6,7 @@ import * as dialog from "@tauri-apps/api/dialog";
 import { listen, UnlistenFn } from "@tauri-apps/api/event";
 import Works from "./Works";
 import { CompressionOptions } from "@src/context/options";
-import { appConfigDir } from "@tauri-apps/api/path";
+import { WorkStatus } from "@src/context/workList";
 let works: WorkListType[] = [];
 
 /**
@@ -17,6 +17,11 @@ export default function WorkArea() {
   const [workList, setWorkList] = useState<WorkListType[]>([]);
 
   const [options] = useContext(CompressionOptions);
+
+  const complete = useCallback(() => {
+    const list = workList.filter((w) => w.status !== WorkStatus.ERROR);
+    return list.length === 0 || list.every((w) => w.status === WorkStatus.END);
+  }, [workList]);
 
   useEffect(() => {
     let filesInfoUnlistenFn: UnlistenFn;
@@ -99,6 +104,35 @@ export default function WorkArea() {
     };
   }, []);
 
+  function onFileDrop(selected: string[]) {
+    selected = selected.filter((path) => /.png$/i.test(path));
+    if (selected && selected.length !== 0) {
+      for (const [id, path] of (selected as string[]).entries()) {
+        works.push({
+          id,
+          fileName: "",
+          path,
+          status: "INIT",
+          progress: 0,
+          originalSize: 0,
+          size: 0,
+          base64: "",
+          err: "",
+        });
+      }
+
+      invoke("compression_handle", {
+        isDir: false,
+        list: (selected as string[]).map((path, id) => [id, path]),
+        speed: options.speed,
+        qualityMinimum: options.qualityMinimum,
+        qualityTarget: options.qualityTarget,
+        ditheringLevel: options.ditheringLevel,
+        compression: options.compression,
+      }).then(() => console.log("Completed!"));
+    }
+  }
+
   function openFile() {
     dialog
       .open({
@@ -144,7 +178,6 @@ export default function WorkArea() {
     dialog
       .open({
         directory: true,
-        defaultPath: await appConfigDir(),
       })
       .then((select) => {
         invoke("compression_handle", {
@@ -166,9 +199,18 @@ export default function WorkArea() {
 
   const area =
     workList.length === 0 ? (
-      <DropContainer onOpenFile={openFile} onOpenDir={openDir}></DropContainer>
+      <DropContainer
+        onOpenFile={openFile}
+        onOpenDir={openDir}
+        onFileDrop={onFileDrop}
+        workList={workList}
+      ></DropContainer>
     ) : (
-      <Works workList={workList} clearWorkList={clearWorkList}></Works>
+      <Works
+        workList={workList}
+        clearWorkList={clearWorkList}
+        complete={complete()}
+      ></Works>
     );
   return <div className={classNames(styles.workArea, "grow")}>{area}</div>;
 }

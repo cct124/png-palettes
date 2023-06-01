@@ -23,7 +23,8 @@
   }
 
   .left {
-    max-width: 80%;
+    // max-width: 80%;
+    width: calc(100vw - $optionsAreaWidth - 150px);
   }
 
   .path {

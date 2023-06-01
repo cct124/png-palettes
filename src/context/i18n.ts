@@ -20,6 +20,10 @@ export interface I18N_TYPE {
        * 选择目录
        */
       openDir: string;
+      /**
+       * 拖拽png文件到此压缩
+       */
+      tips1: string;
     };
     /**
      * 工作列表
@@ -139,13 +143,14 @@ export const zhCN: I18N_TYPE = {
     dropContainer: {
       openFile: "选择文件",
       openDir: "选择目录",
+      tips1: "拖拽png文件到此压缩",
     },
     works: {
       filesNum: "文件数量",
       originalSize: "源文件",
       compressedSize: "压缩后",
       reductionSize: "减少",
-      clearWorkList: "删除列表",
+      clearWorkList: "清除列表",
     },
   },
   optionsArea: {
@@ -188,13 +193,14 @@ export const en: I18N_TYPE = {
     dropContainer: {
       openFile: "Select file",
       openDir: "Select directory",
+      tips1: "Drag and drop PNG files here to compress.",
     },
     works: {
       filesNum: "Number of files",
       originalSize: "source file",
       compressedSize: "after compression",
       reductionSize: "reduce",
-      clearWorkList: "Delete list",
+      clearWorkList: "Clear list",
     },
   },
   optionsArea: {
