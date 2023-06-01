@@ -54,7 +54,7 @@ impl<'a> Pngquant<'a> {
         let file = File::open(path).unwrap();
         let original_size = file.metadata().unwrap().len();
         let decoder = Decoder::new(file);
-        let reader = decoder.read_info().unwrap();
+        let reader = decoder.read_info().map_err(|_err| Error::InternalError)?;
         let info = reader.info();
         let def_quality_max: u8 = 60;
         // 根据颜色模式实例化不同的优化结构体，目前只支持优化Rgba模式的png图像
@@ -162,12 +162,10 @@ impl<'a> Pngquant<'a> {
 
         // 默认质量的参数设置
         match (quality_min, quality_max) {
-            (Some(quality_min), Some(quality_max)) => {
-                attr.set_quality(quality_min, quality_max)?
-            }
+            (Some(quality_min), Some(quality_max)) => attr.set_quality(quality_min, quality_max)?,
             (Some(quality_min), None) => attr.set_quality(quality_min, def_quality_max)?,
             (None, Some(quality_max)) => attr.set_quality(0, quality_max)?,
-            (None, None) => attr.set_quality(0, def_quality_max)?
+            (None, None) => attr.set_quality(0, def_quality_max)?,
         }
 
         // 为多个图像生成一个共享调色板

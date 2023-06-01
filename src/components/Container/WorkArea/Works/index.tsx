@@ -15,8 +15,10 @@ import { ReactComponent as DeleteSvg } from "@src/assets/icons/svg/delete.svg";
 export default function Works({
   workList,
   clearWorkList,
+  complete,
 }: {
   workList: WorkListType[];
+  complete: boolean;
   clearWorkList: () => void;
 }) {
   const [theme] = useContext(ThemeStateContext);
@@ -30,12 +32,7 @@ export default function Works({
     </div>
   );
 
-  const complete = useCallback(() => {
-    const list = workList.filter((w) => w.status !== WorkStatus.ERROR);
-    return list.length === 0 || list.every((w) => w.status === WorkStatus.END);
-  }, [workList]);
-
-  const clearList = complete() ? (
+  const clearList = complete ? (
     <Button
       className={classNames(
         styles.clearWorkList,
@@ -60,7 +57,13 @@ export default function Works({
         "flex flex-column w-100p h-100p relative"
       )}
     >
-      <div className={classNames(styles.top, styles[theme], "w-100p grow scroll-y")}>
+      <div
+        className={classNames(
+          styles.top,
+          styles[theme],
+          "w-100p grow scroll-y"
+        )}
+      >
         {workList.map((w) => (
           <Work work={w} key={w.id}></Work>
         ))}
@@ -74,7 +77,7 @@ export default function Works({
       >
         {fileNum}
         {clearList}
-        {complete()}
+        {complete}
       </div>
     </div>
   );
