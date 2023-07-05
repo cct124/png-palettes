@@ -105,24 +105,9 @@ export default function WorkArea() {
   }, []);
 
   function onFileDrop(selected: string[]) {
-    selected = selected.filter((path) => /.png$/i.test(path));
     if (selected && selected.length !== 0) {
-      for (const [id, path] of (selected as string[]).entries()) {
-        works.push({
-          id,
-          fileName: "",
-          path,
-          status: "INIT",
-          progress: 0,
-          originalSize: 0,
-          size: 0,
-          base64: "",
-          err: "",
-        });
-      }
-
       invoke("compression_handle", {
-        isDir: false,
+        isFile: false,
         list: (selected as string[]).map((path, id) => [id, path]),
         speed: options.speed,
         qualityMinimum: options.qualityMinimum,
@@ -161,7 +146,7 @@ export default function WorkArea() {
           }
 
           invoke("compression_handle", {
-            isDir: false,
+            isFile: false,
             list: (selected as string[]).map((path, id) => [id, path]),
             speed: options.speed,
             qualityMinimum: options.qualityMinimum,
@@ -181,7 +166,7 @@ export default function WorkArea() {
       })
       .then((select) => {
         invoke("compression_handle", {
-          isDir: true,
+          isFile: true,
           list: [[0, select]],
           speed: options.speed,
           qualityMinimum: options.qualityMinimum,
