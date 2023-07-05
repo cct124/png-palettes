@@ -21,7 +21,7 @@ export interface I18N_TYPE {
        */
       openDir: string;
       /**
-       * 拖拽png文件到此压缩
+       * 拖拽png文件或目录到此压缩
        */
       tips1: string;
     };
@@ -143,7 +143,7 @@ export const zhCN: I18N_TYPE = {
     dropContainer: {
       openFile: "选择文件",
       openDir: "选择目录",
-      tips1: "拖拽png文件到此压缩",
+      tips1: "拖拽png文件或目录到此压缩",
     },
     works: {
       filesNum: "文件数量",
@@ -193,7 +193,7 @@ export const en: I18N_TYPE = {
     dropContainer: {
       openFile: "Select file",
       openDir: "Select directory",
-      tips1: "Drag and drop PNG files here to compress.",
+      tips1: "Compress by dragging and dropping PNG files or a directory here.",
     },
     works: {
       filesNum: "Number of files",

@@ -16,7 +16,7 @@ const PREVIEW_MAX_LEN: u64 = 10485760;
 #[tauri::command]
 pub async fn compression_handle(
     window: tauri::Window,
-    is_dir: bool,
+    is_file: bool,
     list: Vec<(usize, String)>,
     speed: usize,
     quality_minimum: usize,
@@ -32,16 +32,7 @@ pub async fn compression_handle(
     };
 
     let mut worklist: Vec<Work> = vec![];
-    if is_dir {
-        let (_id, path) = &list[0];
-        let path = Path::new(&path).to_path_buf();
-        generate_worklist(path, &mut worklist);
-        let mut list: Vec<(usize, String)> = vec![];
-        for work in worklist.iter() {
-            list.push((work.id, work.path.to_string_lossy().to_string()))
-        }
-        files_info(&window, &list)
-    } else {
+    if is_file {
         for (id, path) in list.iter() {
             let path = Path::new(path).to_path_buf();
             worklist.push(Work {
@@ -56,6 +47,43 @@ pub async fn compression_handle(
         }
 
         files_info(&window, &list)
+    } else {
+        // let (_id, path) = &list[0];
+        // let path = Path::new(&path).to_path_buf();
+        // generate_worklist(path, &mut worklist);
+        // let mut list: Vec<(usize, String)> = vec![];
+        // for work in worklist.iter() {
+        //     list.push((work.id, work.path.to_string_lossy().to_string()))
+        // }
+        // files_info(&window, &list)
+
+        let mut file_list: Vec<(usize, String)> = vec![];
+
+        for (_id, path) in list.iter() {
+            let path = Path::new(&path).to_path_buf();
+            if path.is_file() {
+                let id = worklist.len();
+                file_list.push((id, path.to_string_lossy().to_string()));
+
+                worklist.push(Work {
+                    id,
+                    path: path,
+                    status: WorkStatus::INIT,
+                    progress: 0,
+                    original_size: 0,
+                    size: 0,
+                    err: None,
+                });
+            } else if path.is_dir() {
+                println!("{:#?}", path);
+                generate_worklist(path, &mut worklist);
+                println!("{:#?}", worklist);
+                for work in worklist.iter() {
+                    file_list.push((work.id, work.path.to_string_lossy().to_string()))
+                }
+            }
+        }
+        files_info(&window, &file_list)
     }
 
     let mut optimization = Optimization::new(
