@@ -12,8 +12,8 @@
 选择或拖拽需要压缩的文件或目录，选择或拖拽目录时将扫描压缩此目录下所有的`PNG`文件。
 > <span style="color: red">注意！被压缩的图片将会覆盖原文件</span>
 
-<img width="600" src="https://github.com/cct124/png-palettes/assets/47600522/e444d797-8d60-483a-a710-5918915366c1" />
+<img width="600" src="https://github.com/cct124/png-palettes/assets/47600522/0497bf92-8394-4676-871d-0e72aa9b78b2" />
 
 选择图片后的效果
 > 减小压缩的文件大小，降低目标值
-<img width="600" src="https://github.com/cct124/png-palettes/assets/47600522/46aadb7f-943e-4e76-ba55-519977a5c508" />
+<img width="600" src="https://github.com/cct124/png-palettes/assets/47600522/11be0dcf-259e-453c-94bd-f8619606bc40" />
