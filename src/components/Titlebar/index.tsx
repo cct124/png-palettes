@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { appWindow } from "@tauri-apps/api/window";
 import { getName } from "@tauri-apps/api/app";
 import styles from "./index.module.scss";
@@ -8,14 +8,13 @@ import { ReactComponent as LogoSvg } from "@src/assets/icons/svg/logo.svg"; // �
 import WindowSizeControl from "./windowSizeControl";
 import { ThemeStateContext, THEMING_TYPE } from "@src/context/theming";
 
-const appName = await getName();
-
 /**
  * 窗口标题栏
  * @returns
  */
 export default function Container() {
   const [theme] = useContext(ThemeStateContext);
+  const [appName, setAppName] = useState("");
 
   /**
    * 按钮
@@ -35,6 +34,12 @@ export default function Container() {
       {v({ title: v.name })}
     </div>
   ));
+
+  useEffect(() => {
+    getName().then((appName) => {
+      setAppName(appName);
+    });
+  }, []);
 
   function tap(name: string) {
     switch (name) {
