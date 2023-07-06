@@ -12,7 +12,7 @@
 
   .left {
     .logo {
-      $s: 16px;
+      $s: 14px;
       width: $s;
       height: $s;
     }
@@ -47,7 +47,7 @@
           svg {
             fill: var(--titlebar-btn-fill-hover);
           }
-          &[data-name="SvgClose"] {
+          &.icon_2 {
             background-color: var(--chakra-colors-red-650);
             svg {
               fill: var(--chakra-colors-white);
