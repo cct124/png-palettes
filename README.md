@@ -15,5 +15,5 @@
 <img width="600" src="https://github.com/cct124/png-palettes/assets/47600522/e444d797-8d60-483a-a710-5918915366c1" />
 
 选择图片后的效果
-
+> 减小压缩的文件大小，降低目标值
 <img width="600" src="https://github.com/cct124/png-palettes/assets/47600522/46aadb7f-943e-4e76-ba55-519977a5c508" />
