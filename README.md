@@ -16,6 +16,7 @@
 
 选择图片后的效果
 > 减小压缩的文件大小，最直接的方法就是降低目标值
+
 <img width="600" style="box-shadow: 0px 0px 3px #ccc;" src="https://github.com/cct124/png-palettes/assets/47600522/11be0dcf-259e-453c-94bd-f8619606bc40" />
 
 效果
