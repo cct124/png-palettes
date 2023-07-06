@@ -22,7 +22,12 @@ export default function Container() {
    */
   const tbtns = [MinimizeSvg, WindowSizeControl, CloseSvg].map((v, i) => (
     <div
-      className={classNames(styles.icon, styles[theme], "flex-center")}
+      className={classNames(
+        styles.icon,
+        styles[theme],
+        styles[`icon_${i}`],
+        "flex-center"
+      )}
       data-name={v.name}
       key={i}
       onClick={() => tap(v.name)}
