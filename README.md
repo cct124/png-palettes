@@ -25,3 +25,7 @@
 | --- | --- |
 | <img width="300" src="https://github.com/cct124/png-palettes/assets/47600522/3f21e9ca-09be-4125-ae5d-d12e6861a794" /> | <img width="300" src="https://github.com/cct124/png-palettes/assets/47600522/f05f227d-6567-4c43-9042-bb34df0eaebe" /> |
 | 73.8 KB (75,628 字节) | 24.1 KB (24,708 字节) |
+
+如果是已压缩的`PNG`将不会再次压缩
+> 这时将会显示`不支持的PNG颜色模式`，因为目前只支持`RGBA`模式的`PNG`图，如果是`RGB`模式的`PNG`图也会报出此错误，这时需要使用PS或其它工具转换为`RGBA`的颜色模式
+<img width="600" src="https://github.com/cct124/png-palettes/assets/47600522/8dbdb79b-99dc-4f30-8dc3-5a849f41a614" />
