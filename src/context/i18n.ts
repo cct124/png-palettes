@@ -117,6 +117,7 @@ export interface I18N_TYPE {
     about: {
       title: string;
       content: string;
+      version: string;
     };
   };
   /**
@@ -179,6 +180,7 @@ export const zhCN: I18N_TYPE = {
       title: "关于",
       content:
         "这是一个PNG图片压缩工具，选择所要压缩的图片时，软件将PNG图像的RGBA模式转为调色板模式，从而减小图像大小。\r\n如有别的问题请联系：huangdonghao1997@gmail.com",
+      version: "版本：",
     },
   },
   error: {
@@ -229,6 +231,7 @@ export const en: I18N_TYPE = {
       title: "About",
       content:
         "This is a PNG image compression tool. When selecting the image to be compressed,\r\nthe software converts the PNG image's RGBA mode to a palette mode, thereby reducing the image size. \r\nIf you have any other questions, please contact: huangdonghao1997@gmail.com",
+      version: "Version: ",
     },
   },
   error: {

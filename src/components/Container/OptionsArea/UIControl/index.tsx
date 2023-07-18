@@ -4,6 +4,7 @@ import ThemeSwitch from "./ThemeSwitch";
 import { I18n, languages } from "@src/context/i18n";
 import * as dialog from "@tauri-apps/api/dialog";
 import { open } from "@tauri-apps/api/shell";
+import { getVersion } from "@tauri-apps/api/app";
 import { ReactComponent as GitHubSvg } from "@src/assets/icons/svg/github.svg"; // 关闭图标
 import { ThemeStateContext } from "@src/context/theming";
 
@@ -11,11 +12,17 @@ export default function UIControl() {
   const [i18n, setI18n] = useContext(I18n);
   const [theme] = useContext(ThemeStateContext);
 
-  function about() {
-    dialog.message(i18n.dialog.about.content, {
-      type: "info",
-      title: i18n.dialog.about.title,
-    });
+  async function about() {
+    const appVersion = await getVersion();
+
+    dialog.message(
+      `${i18n.dialog.about.version}${appVersion} \r\n` +
+        i18n.dialog.about.content,
+      {
+        type: "info",
+        title: i18n.dialog.about.title,
+      }
+    );
   }
 
   function onSelect(e: React.FormEvent<HTMLSelectElement>) {
@@ -45,7 +52,6 @@ export default function UIControl() {
           <GitHubSvg></GitHubSvg>
         </div>
         <div className={classNames(styles.language, "fs-10 flex-center")}>
-          <span className="mar-r-5">language</span>
           <select
             name="select"
             onInput={onSelect}
