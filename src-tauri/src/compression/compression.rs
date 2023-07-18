@@ -48,15 +48,6 @@ pub async fn compression_handle(
 
         files_info(&window, &list)
     } else {
-        // let (_id, path) = &list[0];
-        // let path = Path::new(&path).to_path_buf();
-        // generate_worklist(path, &mut worklist);
-        // let mut list: Vec<(usize, String)> = vec![];
-        // for work in worklist.iter() {
-        //     list.push((work.id, work.path.to_string_lossy().to_string()))
-        // }
-        // files_info(&window, &list)
-
         let mut file_list: Vec<(usize, String)> = vec![];
 
         for (_id, path) in list.iter() {
@@ -75,9 +66,7 @@ pub async fn compression_handle(
                     err: None,
                 });
             } else if path.is_dir() {
-                println!("{:#?}", path);
                 generate_worklist(path, &mut worklist);
-                println!("{:#?}", worklist);
                 for work in worklist.iter() {
                     file_list.push((work.id, work.path.to_string_lossy().to_string()))
                 }

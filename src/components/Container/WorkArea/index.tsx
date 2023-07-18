@@ -104,6 +104,10 @@ export default function WorkArea() {
     };
   }, []);
 
+  /**
+   * 拖拽文件
+   * @param selected
+   */
   function onFileDrop(selected: string[]) {
     if (selected && selected.length !== 0) {
       invoke("compression_handle", {
@@ -118,6 +122,9 @@ export default function WorkArea() {
     }
   }
 
+  /**
+   * 打开文件
+   */
   function openFile() {
     dialog
       .open({
@@ -146,7 +153,7 @@ export default function WorkArea() {
           }
 
           invoke("compression_handle", {
-            isFile: false,
+            isFile: true,
             list: (selected as string[]).map((path, id) => [id, path]),
             speed: options.speed,
             qualityMinimum: options.qualityMinimum,
@@ -166,7 +173,7 @@ export default function WorkArea() {
       })
       .then((select) => {
         invoke("compression_handle", {
-          isFile: true,
+          isFile: false,
           list: [[0, select]],
           speed: options.speed,
           qualityMinimum: options.qualityMinimum,
