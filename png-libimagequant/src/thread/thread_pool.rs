@@ -67,8 +67,8 @@ impl Worker {
     fn new(id: usize, receiver: Arc<Mutex<mpsc::Receiver<Message>>>) -> Worker {
         let thread = thread::spawn(move || loop {
             // 锁定接受者对象用于获取数据，尝试等待此接收者上的值阻塞当前线程，自动分配线程池的核心功能
+            // ！注意，此功能生效是因为当 let 语句结束时任何表达式中等号右侧使用的临时值都会立即被丢弃，语句返回值离开作用域，receiver对象被解锁，从而其它线程能立即获取锁;
             let message = receiver.lock().unwrap().recv().unwrap();
-
             match message {
                 // 工作消息执行工作
                 Message::NewJob(job) => {
